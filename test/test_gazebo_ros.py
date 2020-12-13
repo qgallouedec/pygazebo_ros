@@ -23,6 +23,7 @@ time.sleep(5)  # wait for the core to be ready
 rospy.init_node('test_node', anonymous=True, log_level=rospy.ERROR)
 gazebo_ros = gazebo_ros.GazeboROS()
 
+
 class TestGazeboROSServices(unittest.TestCase):
 
     # -- Getters and setter --
@@ -230,23 +231,69 @@ class TestGazeboROSServices(unittest.TestCase):
         pass
 
     def test_spawn_sdf_model(self):
+        model_xml = '''<?xml version="1.0" ?>
+            <sdf version="1.5">
+                <model name="box">
+                    <link name="link">
+                    <collision name="collision">
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                        </geometry>
+                    </collision>
+                    <visual name="collision">
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                        </geometry>
+                    </visual>
+                    </link>
+                </model>
+            </sdf>'''
         gazebo_ros.spawn_sdf_model(
-            model_name='test_model_light',
-            model_xml='<?xml version="1.0" ?><sdf version="1.5"><world name="default"><light type="point" name="point_light"><pose>0 2 2 0 0 0</pose><diffuse>1 1 0 1</diffuse><specular>.1 .1 .1 1</specular><attenuation><range>20</range><linear>0.2</linear><constant>0.8</constant><quadratic>0.01</quadratic></attenuation><cast_shadows>false</cast_shadows></light></world></sdf>',
-            robot_namespace='test_light_ns',
-            initial_position=[0,0,0],
-            initial_orientation=[0,0,0,0],
+            model_name='test_model_sdf',
+            model_xml=model_xml,
+            robot_namespace='test_robot_namespace_sdf',
+            initial_position=[1.0, 1.0, 1.0],
+            initial_orientation=[0.1, 0.1, 0, 0],
             reference_frame='')
 
     def test_spawn_urdf_model(self):
-        time.sleep(5)
+        model_xml='''<?xml version="1.0"?>
+            <robot name="robot">
+                <link name="base_link">
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                            <box size="2 2 2"/>
+                        </geometry>
+                    </collision>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                            <box size="2 2 2"/>
+                        </geometry>
+                    </visual>
+                    <inertial>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <mass value="1"/>
+                        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+                    </inertial>
+                </link>
+            </robot>'''
         gazebo_ros.spawn_urdf_model(
-            model_name='test_model',
-            model_xml='<?xml version="1.0"?><robot name="robot"><link name="base_link"><collision><origin xyz="0 0 1" rpy="0 0 0"/><geometry><box size="2 2 2"/></geometry></collision><visual><origin xyz="0 0 1" rpy="0 0 0"/><geometry><box size="2 2 2"/></geometry><material name="orange"/></visual><inertial><origin xyz="0 0 1" rpy="0 0 0"/><mass value="1"/><inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/></inertial></link></robot>',
-            robot_namespace='test_robot_ns',
+            model_name='test_model_urdf',
+            model_xml=model_xml,
+            robot_namespace='test_robot_namespace_urdf',
             initial_position=[0, 0, 10],
             initial_orientation=[0, 0.1, 0.2, 0],
             reference_frame='')
+        time.sleep(30)
+        
 
     def test_unpause_physics(self):
         pass
@@ -255,16 +302,30 @@ class TestGazeboROSServices(unittest.TestCase):
 
     # -- Derived method --
     # region
-    def apply_body_force(self):
+    def test_apply_body_force(self):
         pass
 
-    def get_sim_time(self):
+    def test_get_sim_time(self):
         self.assertIsInstance(gazebo_ros.get_sim_time(), float)
+
+    def test_spawn_light(self):
+        gazebo_ros.spawn_light(
+            light_name='testing_light',
+            position=[1.0, 2.0, 3.0],
+            yaw=0.1, pitch=0.2, roll=-0.9,
+            diffuse_red=0.9, diffuse_green=0.8, diffuse_blue=0.7, diffuse_alpha=0.6,
+            specular_red=0.5, specular_green=0.4, specular_blue=0.3, specular_alpha=0.2,
+            attenuation_range=10,
+            attenuation_constant=0.5,
+            attenuation_linear=0.4,
+            attenuation_quadratic=0.3,
+            cast_shadows=True)
 
     # endregion
 
     # -- Miscellaneous --
     # region
+
     def test_pausing_context(self):
         with gazebo_ros.pausing():
             self.assertTrue(gazebo_ros.paused)

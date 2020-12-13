@@ -1075,7 +1075,6 @@ class GazeboROS(object):
         req.reference_frame = reference_frame
         self._send_request(self._spawn_sdf_model_srv, req)
 
-
     def spawn_urdf_model(self, model_name: str, model_xml: str, robot_namespace: str, initial_position: List[float], initial_orientation: List[float], reference_frame: str) -> None:
         """Spawn an urdf model
 
@@ -1143,6 +1142,64 @@ class GazeboROS(object):
         torque = [0, 0, 0]
         self.apply_body_wrench(body_name, reference_frame,
                                reference_point, force, torque, start_time, duration)
+
+    def spawn_light(self, light_name: str, position: List[float], yaw: float = 0, pitch: float = 0, roll: float = -1.0, diffuse_red: float = 0.5, diffuse_green: float = 0.5, diffuse_blue: float = 0.5, diffuse_alpha: float = 1.0, specular_red: float = 0.1, specular_green: float = 0.1, specular_blue: float = 0.1, specular_alpha: float = 1.0, attenuation_range: float = 20, attenuation_constant: float = 0.5, attenuation_linear: float = 0.1, attenuation_quadratic: float = 0.0, cast_shadows: bool = False, reference_frame: str = ''):
+        """Spawn a light
+
+        Args:
+            light_name (str): light name
+            position (List): position [x, y, z]
+            yaw (float, optional): yaw. Defaults to 0.
+            pitch (float, optional): pitch. Defaults to 0.
+            roll (float, optional): roll. Defaults to -1.0.
+            diffuse_red (float, optional): red beam rate. Defaults to 0.5.
+            diffuse_green (float, optional): green beam rate. Defaults to 0.5.
+            diffuse_blue (float, optional): blue beam rate. Defaults to 0.5.
+            diffuse_alpha (float, optional): opacity rate. Defaults to 1.0.
+            specular_red (float, optional): specular red beam rate. Defaults to 0.1.
+            specular_green (float, optional): specular green beam rate. Defaults to 0.1.
+            specular_blue (float, optional): specular blue beam rate. Defaults to 0.1.
+            specular_alpha (float, optional): specular opacity rate. Defaults to 1.0.
+            attenuation_range (float, optional): light range. Defaults to 20.
+            attenuation_constant (float, optional): constant attenuation. Defaults to 0.5.
+            attenuation_linear (float, optional): linear attenuation. Defaults to 0.1.
+            attenuation_constant (float, optional): quadratic attenuation. Defaults to 0.0.
+            cast_shadows (bool, optional): cast shadows. Defaults to False.
+        """
+        template = '''<?xml version="1.0" ?>
+            <sdf version="1.5">
+            <light type="point" name='unused_name'>
+                <pose>{x} {y} {z} {yaw} {pitch} {roll}</pose>
+                <diffuse>{diffuse_red} {diffuse_green} {diffuse_blue} {diffuse_alpha}</diffuse>
+                <specular>{specular_red} {specular_green} {specular_blue} {specular_alpha}</specular>
+                <attenuation>
+                    <range>{attenuation_range}</range>
+                    <constant>{attenuation_constant}</constant>
+                    <linear>{attenuation_linear}</linear>
+                    <quadratic>{attenuation_quadratic}</quadratic>
+                </attenuation>
+                <cast_shadows>{cast_shadows}</cast_shadows>
+            </light>
+            </sdf>'''
+
+        model_xml = template.format(
+            x=position[0], y=position[1], z=position[2],
+            yaw=yaw, pitch=pitch, roll=roll,
+            diffuse_red=diffuse_red, diffuse_green=diffuse_green, diffuse_blue=diffuse_blue, diffuse_alpha=diffuse_alpha,
+            specular_red=specular_red, specular_green=specular_green, specular_blue=specular_blue, specular_alpha=specular_alpha,
+            attenuation_range=attenuation_range,
+            attenuation_constant=attenuation_constant,
+            attenuation_linear=attenuation_linear,
+            attenuation_quadratic=attenuation_quadratic,
+            cast_shadows=str(cast_shadows).lower())
+
+        self.spawn_sdf_model(
+            model_name=light_name,
+            model_xml=model_xml,
+            robot_namespace='',
+            initial_position=[0.0, 0.0, 0.0],
+            initial_orientation=[0.0, 0.0, 0.0, 0.0],
+            reference_frame=reference_frame)
 
     # endregion
 
