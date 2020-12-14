@@ -12,3 +12,4 @@ cache:
   pip: true
 install:
 - pip install .
+script: pytest
