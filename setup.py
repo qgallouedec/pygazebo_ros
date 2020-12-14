@@ -4,14 +4,14 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
-    name='gazebo_ros',
-    description='GazeboROS',
+    name='pygazebo_ros',
+    description='Control Gazebo using ROS topics and services',
     author='Quentin GALLOUÉDEC',
     author_email='gallouedec.quentin@gmail.com',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    # url='https://github.com/quenting44/panda-gym',
+    url='https://github.com/qgallouedec/pygazebo_ros',
     packages=find_packages(),
     version='0.0.0',
-    # install_requires=['gym', 'pybullet', 'numpy']
+    install_requires=['rospkg', 'defusedxml', 'netifaces']
 )

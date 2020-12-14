@@ -1,5 +1,5 @@
 import unittest
-import gazebo_ros
+import pygazebo_ros
 
 import rospy
 import roslaunch
@@ -8,20 +8,20 @@ import rospkg
 import os
 import time
 
-rospack = rospkg.RosPack()
+# rospack = rospkg.RosPack()
 
-uuid = roslaunch.rlutil.get_or_generate_uuid(
-    options_runid=None, options_wait_for_master=False)
-roslaunch.configure_logging(uuid)
-# gazebo_ros_path = rospack.get_path('gazebo_ros')
-test_path = os.path.dirname(os.path.abspath(__file__))
-empty_world_path = os.path.join(test_path, 'launch/test_launch.launch')
-launch = roslaunch.parent.ROSLaunchParent(
-    uuid, [empty_world_path], is_core=True, is_rostest=True)
-launch.start()
-time.sleep(5)  # wait for the core to be ready
-rospy.init_node('test_node', anonymous=True, log_level=rospy.ERROR)
-gazebo_ros = gazebo_ros.GazeboROS()
+# uuid = roslaunch.rlutil.get_or_generate_uuid(
+#     options_runid=None, options_wait_for_master=False)
+# roslaunch.configure_logging(uuid)
+# # gazebo_ros_path = rospack.get_path('gazebo_ros')
+# test_path = os.path.dirname(os.path.abspath(__file__))
+# empty_world_path = os.path.join(test_path, 'launch/test_launch.launch')
+# launch = roslaunch.parent.ROSLaunchParent(
+#     uuid, [empty_world_path], is_core=True, is_rostest=True)
+# launch.start()
+# time.sleep(5)  # wait for the core to be ready
+# rospy.init_node('test_node', anonymous=True, log_level=rospy.ERROR)
+gazebo_ros = pygazebo_ros.GazeboROS()
 
 
 class TestGazeboROSServices(unittest.TestCase):
