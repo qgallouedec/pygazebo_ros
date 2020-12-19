@@ -8,20 +8,9 @@ import rospkg
 import os
 import time
 
-# rospack = rospkg.RosPack()
-
-# uuid = roslaunch.rlutil.get_or_generate_uuid(
-#     options_runid=None, options_wait_for_master=False)
-# roslaunch.configure_logging(uuid)
-# # gazebo_ros_path = rospack.get_path('gazebo_ros')
-# test_path = os.path.dirname(os.path.abspath(__file__))
-# empty_world_path = os.path.join(test_path, 'launch/test_launch.launch')
-# launch = roslaunch.parent.ROSLaunchParent(
-#     uuid, [empty_world_path], is_core=True, is_rostest=True)
-# launch.start()
-# time.sleep(5)  # wait for the core to be ready
-# rospy.init_node('test_node', anonymous=True, log_level=rospy.ERROR)
-gazebo_ros = pygazebo_ros.GazeboROS()
+test_path = os.path.dirname(os.path.abspath(__file__))
+world_path = os.path.join(test_path, 'launch/world_test.world')
+gazebo_ros = pygazebo_ros.GazeboROS(world_name=world_path)
 
 
 class TestGazeboROSServices(unittest.TestCase):
@@ -125,7 +114,7 @@ class TestGazeboROSServices(unittest.TestCase):
     # region
     def test_apply_body_wrench(self):
         gazebo_ros.apply_body_wrench(
-            body_name='testing_cube1::cube',
+            body_name='model_test_1::link_1',
             reference_frame='',
             reference_point=[1, 1, 1],
             force=[1, 0, 2],
@@ -137,7 +126,7 @@ class TestGazeboROSServices(unittest.TestCase):
 
     def test_apply_joint_effort(self):
         gazebo_ros.apply_joint_effort(
-            joint_name='testing_cube1::wheel_joint',
+            joint_name='model_test_1::joint',
             effort=1,
             start_time_secs=2,
             start_time_nsecs=58,
@@ -146,97 +135,179 @@ class TestGazeboROSServices(unittest.TestCase):
 
     def test_clear_body_wrenches(self):
         gazebo_ros.clear_body_wrenches(
-            body_name='testing_cube1::cube')
+            body_name='model_test_1::link_1')
 
     def test_clear_joint_forces(self):
         gazebo_ros.clear_joint_forces(
-            joint_name='testing_cube1::wheel_joint')
+            joint_name='model_test_1::joint')
 
     def test_delete_light(self):
         gazebo_ros.delete_light(
-            light_name='sun')
+            light_name='light_test_1')
 
     def test_delete_model(self):
         gazebo_ros.delete_model(
-            model_name='testing_cube2')
+            model_name='model_test_2')
 
     def test_get_joint_properties(self):
         gazebo_ros.get_joint_properties(
-            joint_name='testing_cube1::prism_joint')
+            joint_name='model_test_1::joint')
 
     def test_get_light_properties(self):
-        pass
+        self.assertIsInstance(gazebo_ros.get_light_properties(
+            light_name='light_test_2'), dict)
 
     def test_get_link_properties(self):
-        pass
+        self.assertIsInstance(gazebo_ros.get_link_state(
+            link_name='model_test_1::link_1'), dict)
 
     def test_get_link_state(self):
-        pass
+        self.assertIsInstance(gazebo_ros.get_link_state(
+            link_name='model_test_1::link_1'), dict)
 
     def test_get_loggers(self):
-        pass
+        self.assertIsInstance(
+            gazebo_ros.get_loggers(), dict)
 
     def test_get_model_properties(self):
-        pass
+        self.assertIsInstance(
+            gazebo_ros.get_model_properties(
+                model_name='model_test_1'), dict)
 
     def test_get_model_state(self):
-        pass
+        self.assertIsInstance(
+            gazebo_ros.get_model_state(
+                model_name='model_test_1', relative_entity_name=''), dict)
 
     def test_get_physics_properties(self):
-        pass
+        self.assertIsInstance(
+            gazebo_ros.get_physics_properties(), dict)
 
     def test_get_world_properties(self):
-        pass
+        self.assertIsInstance(
+            gazebo_ros.get_world_properties(), dict)
 
     def test_pause_physics(self):
-        pass
+        gazebo_ros.pause_physics()
+        self.assertTrue(gazebo_ros.paused)
 
     def test_reset_simulation(self):
-        pass
+        gazebo_ros.reset_simulation()
 
     def test_reset_world(self):
-        pass
+        gazebo_ros.reset_world()
 
     def test_set_joint_properties(self):
-        pass
+        gazebo_ros.set_joint_properties(
+            joint_name='model_test_1::joint',
+            damping=[0.1],
+            hiStop=[100],
+            loStop=[-100],
+            erp=[0.3],
+            cfm=[0.0001],
+            stop_erp=[0.6],
+            stop_cfm=[0.0001],
+            fudge_factor=[1.0],
+            fmax=[10],
+            vel=[0.01])
 
     def test_set_light_properties(self):
-        # gazebo_ros.set_light_properties(
-        #     light_name='test_light',
-        #     diffuse=[127,127,127,255],
-        #     attenuation_constant=0.5,
-        #     attenuation_linear=0.1,
-        #     attenuation_quadratic=0.0)
-        pass
+        gazebo_ros.set_light_properties(
+            light_name='light_test_2',
+            diffuse=[0.5, 0.5, 0.5, 1.0],
+            attenuation_constant=0.9,
+            attenuation_linear=0.3,
+            attenuation_quadratic=0.01)
 
     def test_set_link_properties(self):
-        pass
+        gazebo_ros.set_link_properties(
+            link_name='model_test_1::link_1',
+            position=[5.0, 5.0, 10.0],
+            orientation=[0.2, 0.5, 0.8, 0.4],
+            gravity_mode=False,
+            mass=4,
+            ixx=1.0,
+            ixy=0.0,
+            ixz=0.0,
+            iyy=1.0,
+            iyz=0.0,
+            izz=1.0)
 
     def test_set_link_state(self):
-        pass
+        gazebo_ros.set_link_state(
+            link_name='model_test_3::link',
+            position=[5.0, 6.0, 10.0],
+            orientation=[0.2, 0.6, 0.8, 0.4],
+            linear_velocity=[0.0, 0.0, 0.1],
+            angular_velocity=[0.1, 0.0, 0.0],
+            reference_frame='')
+        ls = gazebo_ros.get_link_state(link_name='model_test_3::link')
+        self.assertAlmostEqual(ls['position'][0], 5.0, places=1)
 
     def test_set_logger_level(self):
-        pass
+        gazebo_ros.set_logger_level(logger='ros.roscpp', level='warn')
+        loggers = gazebo_ros.get_loggers()
+        self.assertEqual(loggers['ros.roscpp']['level'], 'warn')
 
     def test_set_model_configuration(self):
-        pass
+        gazebo_ros.set_model_configuration(
+            model_name='model_test_1',
+            urdf_param_name='',
+            joint_names=['joint'], joint_positions=[2.0])
+        joint_position = gazebo_ros.get_joint_properties(
+            'model_test_1::joint')['position'][0]
+        self.assertAlmostEqual(joint_position, 2.0, places=2)
 
     def test_set_model_state(self):
-        pass
+        desired_pos = [4.0, 9.0, 3.0]
+        gazebo_ros.set_model_state(
+            model_name='model_test_1',
+            position=desired_pos,
+            orientation=[4, 5, 6, 7],
+            linear_velocity=[0.1, 0.1, -0.1],
+            angular_velocity=[0.1, 0.2, -0.2],
+            reference_frame='')
+        pos = gazebo_ros.get_model_state(
+            model_name='model_test_1',
+            relative_entity_name='')['position']
+        for i in range(3):
+            self.assertAlmostEqual(desired_pos[i], pos[i], places=1)
 
     def test_set_parameters(self):
-        pass
+        out = gazebo_ros.set_parameters(
+            bools=[],
+            ints=[],
+            strs=[],
+            doubles=[{'name': 'gravity_x', 'value': 0.1}],
+            groups=[])
+        for item in out['doubles']:
+            if item['name'] == 'gravity_x':
+                self.assertEqual(item['value'], 0.1)
 
     def test_set_physics_properties(self):
-        pass
+        gazebo_ros.set_physics_properties(
+            time_step=0.001,
+            max_update_rate=1000.0,
+            gravity=[0.1, 0.2, -9.8],
+            auto_disable_bodies=False,
+            sor_pgs_precon_iters=0,
+            sor_pgs_iters=50,
+            sor_pgs_w=1.4,
+            sor_pgs_rms_error_tol=0.0,
+            contact_surface_layer=0.0,
+            contact_max_correcting_vel=0.0,
+            cfm=0.0,
+            erp=1.0,
+            max_contacts=20)
+        self.assertEqual(gazebo_ros.gravity[1], 0.2)
 
     def test_spawn_sdf_model(self):
         model_xml = '''<?xml version="1.0" ?>
             <sdf version="1.5">
-                <model name="box">
+                <model name="unused_name">
                     <link name="link">
                     <collision name="collision">
-                        <pose>0 0 0 0 0 0</pose>
+                        <pose>0 0 0.5 0 0 0</pose>
                         <geometry>
                         <box>
                             <size>1 1 1</size>
@@ -244,7 +315,7 @@ class TestGazeboROSServices(unittest.TestCase):
                         </geometry>
                     </collision>
                     <visual name="collision">
-                        <pose>0 0 0 0 0 0</pose>
+                        <pose>0 0 0.5 0 0 0</pose>
                         <geometry>
                         <box>
                             <size>1 1 1</size>
@@ -258,22 +329,22 @@ class TestGazeboROSServices(unittest.TestCase):
             model_name='test_model_sdf',
             model_xml=model_xml,
             robot_namespace='test_robot_namespace_sdf',
-            initial_position=[1.0, 1.0, 1.0],
-            initial_orientation=[0.1, 0.1, 0, 0],
+            initial_position=[-2.0, 3.0, 5.0],
+            initial_orientation=[0.1, 0.1, 0.2, 0],
             reference_frame='')
 
     def test_spawn_urdf_model(self):
-        model_xml='''<?xml version="1.0"?>
+        model_xml = '''<?xml version="1.0"?>
             <robot name="robot">
                 <link name="base_link">
                     <collision>
-                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <origin xyz="0 0 1" rpy="0 0 0"/>
                         <geometry>
                             <box size="2 2 2"/>
                         </geometry>
                     </collision>
                     <visual>
-                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <origin xyz="0 0 1" rpy="0 0 0"/>
                         <geometry>
                             <box size="2 2 2"/>
                         </geometry>
@@ -292,18 +363,29 @@ class TestGazeboROSServices(unittest.TestCase):
             initial_position=[0, 0, 10],
             initial_orientation=[0, 0.1, 0.2, 0],
             reference_frame='')
-        time.sleep(30)
-        
 
     def test_unpause_physics(self):
-        pass
+        gazebo_ros.unpause_physics()
+        self.assertFalse(gazebo_ros.paused)
 
     # endregion
 
     # -- Derived method --
     # region
     def test_apply_body_force(self):
-        pass
+        gazebo_ros.apply_body_force(
+            body_name='model_test_4::link',
+            reference_point=[0, 0, 0],
+            force=[0, 0.1, 0.1],
+            start_time=1.000001,
+            reference_frame='model_test_4::link')
+
+    def test_apply_body_torque(self):
+        gazebo_ros.apply_body_torque(
+            body_name='model_test_4::link',
+            torque=[0.1, 0.2, 0.3],
+            start_time=2.000001,
+            reference_frame='model_test_4::link')
 
     def test_get_sim_time(self):
         self.assertIsInstance(gazebo_ros.get_sim_time(), float)
@@ -316,10 +398,13 @@ class TestGazeboROSServices(unittest.TestCase):
             diffuse_red=0.9, diffuse_green=0.8, diffuse_blue=0.7, diffuse_alpha=0.6,
             specular_red=0.5, specular_green=0.4, specular_blue=0.3, specular_alpha=0.2,
             attenuation_range=10,
-            attenuation_constant=0.5,
+            attenuation_constant=0.55,
             attenuation_linear=0.4,
             attenuation_quadratic=0.3,
             cast_shadows=True)
+        attenuation_constant = gazebo_ros.get_light_properties(
+            light_name='testing_light')['attenuation_constant']
+        self.assertAlmostEqual(attenuation_constant, 0.55)
 
     # endregion
 
