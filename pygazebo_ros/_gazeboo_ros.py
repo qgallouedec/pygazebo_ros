@@ -47,16 +47,21 @@ import genpy
 
 from contextlib import contextmanager
 
+Message = genpy.Message
+Request = genpy.Message
+Response = genpy.Message
+Dataclass = Type[genpy.Message]
+Service = Callable[[Request], Response]
 
-def subscribe(name: str, data_class: Type[genpy.Message],
-              callback: Callable[[genpy.Message], None],
+def subscribe(name: str, data_class: Dataclass,
+              callback: Callable[[Message], None],
               timeout: Optional[float] = None) -> rospy.Subscriber:
     """Registering as a subscriber to a topic
 
     Args:
         name (str): topic name
-        data_class (Type[genpy.Message]): data class of the topic
-        callback (Callable[[genpy.Message], None]): the function called each
+        data_class (Dataclass): data class of the topic
+        callback (Callable[[Message], None]): the function called each
           time a message is published on the topic
         timeout (Optional[float], optional): raise error if no message is
           published on the topic after a time; if None, does not wait for a
@@ -80,7 +85,7 @@ def subscribe(name: str, data_class: Type[genpy.Message],
         rospy.logdebug(
             "Waiting for topic %s interrupted" % name)
         raise e
-    except rospy.ROSException as e:
+    except rospy.ROSException:
         err_msg = "Timeout exceded, no message received on topic %s" % name
         rospy.logerr(err_msg)
         raise TimeoutError(err_msg)
@@ -89,13 +94,13 @@ def subscribe(name: str, data_class: Type[genpy.Message],
         return rospy.Subscriber(name, data_class, callback)
 
 
-def publisher(name: str, data_class: Type[genpy.Message],
+def publisher(name: str, data_class: Dataclass,
               timeout: Optional[float] = None) -> rospy.Publisher:
     """Registering as a publisher of a ROS topic.
 
     Args:
         name (str): topic name
-        data_class (Type[genpy.Message]): the data class
+        data_class (Dataclass): the data class
         timeout (Optional[float], optional): raise error if nobody subscribe to
           the topic after a time; if None, does not wait for a subscriber.
           Defaults to None.
@@ -170,22 +175,21 @@ def service(name: str, service_class: Any,
 
 
 def send_request(
-        srv: Callable[[genpy.Message], genpy.Message],
-        req: Optional[genpy.Message] = None) -> genpy.Message:
+        srv: Service,
+        req: Optional[Request] = None) -> Response:
     """Send a request to a service and return the answer.
 
     Args:
-        srv (Callable[[genpy.Message], genpy.Message]): the service
-        req (Optional[genpy.Message], optional): the request.
+        srv (Service): the service
+        req (Optional[Request], optional): the request.
             Defaults to None.
 
     Raises:
         Exception: if service call fails
 
     Returns:
-        genpy.Message: the answer
+        Reponse: the answer
     """
-
     rospy.logdebug('Calling service %s' % srv.resolved_name)
     if req:
         ans = srv(req)
@@ -208,7 +212,49 @@ def send_request(
         return ans
 
 
+def _parse_args(paused, use_sim_time, extra_gazebo_args, gui,
+                recording, debug, physics, verbose, output, world_name,
+                respawn_gazebo, use_clock_frequency, pub_clock_frequency,
+                enable_ros_network, server_required, gui_required):
+    sys.argv.append('paused:={}'.format(str(paused).lower()))
+    sys.argv.append('use_sim_time:={}'.format(str(use_sim_time).lower()))
+    sys.argv.append('extra_gazebo_args:={}'.format(extra_gazebo_args))
+    sys.argv.append('gui:={}'.format(str(gui).lower()))
+    sys.argv.append('recording:={}'.format(str(recording).lower()))
+    sys.argv.append('debug:={}'.format(str(debug).lower()))
+    sys.argv.append('physics:={}'.format(physics))
+    sys.argv.append('verbose:={}'.format(str(verbose).lower()))
+    sys.argv.append('output:={}'.format(output))
+    sys.argv.append('world_name:={}'.format(world_name))
+    sys.argv.append('respawn_gazebo:={}'.format(str(respawn_gazebo).lower()))
+    sys.argv.append('use_clock_frequency:={}'.format(
+        str(use_clock_frequency).lower()))
+    sys.argv.append('pub_clock_frequency:={}'.format(pub_clock_frequency))
+    sys.argv.append('enable_ros_network:={}'.format(
+        str(enable_ros_network).lower()))
+    sys.argv.append('server_required:={}'.format(str(server_required).lower()))
+    sys.argv.append('gui_required:={}'.format(str(gui_required).lower()))
+
+
+def _state_to_dict(state, i):
+    return {
+        'postion': [state.pose[i].position.x,
+                    state.pose[i].position.y,
+                    state.pose[i].position.z],
+        'orientation': [state.pose[i].orientation.x,
+                        state.pose[i].orientation.y,
+                        state.pose[i].orientation.z,
+                        state.pose[i].orientation.w],
+        'linear_velocity': [state.twist[i].linear.x,
+                            state.twist[i].linear.y,
+                            state.twist[i].linear.z],
+        'angular_velocity': [state.twist[i].angular.x,
+                             state.twist[i].angular.y,
+                             state.twist[i].angular.z]}
+
+
 class _GazeboROS(object):
+
     """Class containing only services and topic method"""
 
     _JOINT_TYPE = [
@@ -236,7 +282,7 @@ class _GazeboROS(object):
 
         # currently, I haven't found a cleaner way to give args to empty_world
         # than to add args to sys.argv
-        self._parse_args(
+        _parse_args(
             paused, use_sim_time, extra_gazebo_args, gui, recording, debug,
             physics, verbose, output, world_name, respawn_gazebo,
             use_clock_frequency, pub_clock_frequency, enable_ros_network,
@@ -257,31 +303,6 @@ class _GazeboROS(object):
     # Should not be used with parameters that could change without user
     # action (example: sim_time).
     # region
-
-    def _parse_args(self, paused, use_sim_time, extra_gazebo_args, gui,
-                    recording, debug, physics, verbose, output, world_name,
-                    respawn_gazebo, use_clock_frequency, pub_clock_frequency,
-                    enable_ros_network, server_required, gui_required):
-        sys.argv.append('paused:={}'.format(str(paused).lower()))
-        sys.argv.append('use_sim_time:={}'.format(str(use_sim_time).lower()))
-        sys.argv.append('extra_gazebo_args:={}'.format(extra_gazebo_args))
-        sys.argv.append('gui:={}'.format(str(gui).lower()))
-        sys.argv.append('recording:={}'.format(str(recording).lower()))
-        sys.argv.append('debug:={}'.format(str(debug).lower()))
-        sys.argv.append('physics:={}'.format(physics))
-        sys.argv.append('verbose:={}'.format(str(verbose).lower()))
-        sys.argv.append('output:={}'.format(output))
-        sys.argv.append('world_name:={}'.format(world_name))
-        sys.argv.append('respawn_gazebo:={}'.format(
-            str(respawn_gazebo).lower()))
-        sys.argv.append('use_clock_frequency:={}'.format(
-            str(use_clock_frequency).lower()))
-        sys.argv.append('pub_clock_frequency:={}'.format(pub_clock_frequency))
-        sys.argv.append('enable_ros_network:={}'.format(
-            str(enable_ros_network).lower()))
-        sys.argv.append('server_required:={}'.format(
-            str(server_required).lower()))
-        sys.argv.append('gui_required:={}'.format(str(gui_required).lower()))
 
     def _launch_world(self, is_core):
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(
@@ -631,40 +652,12 @@ class _GazeboROS(object):
     def _link_states_callback(self, value):
         nb_links = len(value.name)
         for i in range(nb_links):
-            self.link_states[value.name[i]] = {
-                'postion': [value.pose[i].position.x,
-                            value.pose[i].position.y,
-                            value.pose[i].position.z],
-                'orientation': [value.pose[i].orientation.x,
-                                value.pose[i].orientation.y,
-                                value.pose[i].orientation.z,
-                                value.pose[i].orientation.w],
-                'linear_velocity': [value.twist[i].linear.x,
-                                    value.twist[i].linear.y,
-                                    value.twist[i].linear.z],
-                'angular_velocity': [value.twist[i].angular.x,
-                                     value.twist[i].angular.y,
-                                     value.twist[i].angular.z]}
+            self.link_states[value.name[i]] = _state_to_dict(value, i)
 
     def _model_states_callback(self, value):
         nb_models = len(value.name)
         for i in range(nb_models):
-            self.model_states[value.name[i]] = {
-                'postion': [value.pose[i].position.x,
-                            value.pose[i].position.y,
-                            value.pose[i].position.z],
-                'orientation': [value.pose[i].orientation.x,
-                                value.pose[i].orientation.y,
-                                value.pose[i].orientation.z,
-                                value.pose[i].orientation.w],
-                'linear_velocity': [value.twist[i].linear.x,
-                                    value.twist[i].linear.y,
-                                    value.twist[i].linear.z],
-                'angular_velocity': [value.twist[i].angular.x,
-                                     value.twist[i].angular.y,
-                                     value.twist[i].angular.z]}
-
-        rospy.logwarn_once('model_states_callback not implemented')
+            self.model_states[value.name[i]] = _state_to_dict(value, i)
 
     def _parameter_descriptions_callback(self, value):
         # NOTE: it seems like gazebo subscribe to this this topic instead of
@@ -1143,13 +1136,11 @@ class _GazeboROS(object):
         send_request(self._pause_physics_srv)
 
     def reset_simulation(self) -> None:
-        """Reset the simulation.
-        """
+        """Reset the simulation."""
         send_request(self._reset_simulation_srv)
 
     def reset_world(self) -> None:
-        """Reset the world.
-        """
+        """Reset the world."""
         send_request(self._reset_world_srv)
 
     def set_joint_properties(
@@ -1506,19 +1497,9 @@ class _GazeboROS(object):
               frame of this model/body, if left empty or "world", then gazebo
               world frame is used
         """
-        req = SpawnModelRequest()
-        req.model_name = model_name
-        req.model_xml = model_xml
-        req.robot_namespace = robot_namespace
-        req.initial_pose.position.x = initial_position[0]
-        req.initial_pose.position.x = initial_position[1]
-        req.initial_pose.position.x = initial_position[2]
-        req.initial_pose.orientation.x = initial_orientation[0]
-        req.initial_pose.orientation.x = initial_orientation[1]
-        req.initial_pose.orientation.x = initial_orientation[2]
-        req.initial_pose.orientation.x = initial_orientation[3]
-        req.reference_frame = reference_frame
-        send_request(self._spawn_sdf_model_srv, req)
+        self._spawn_model(
+            model_name, model_xml, robot_namespace, initial_position,
+            initial_orientation, reference_frame, self._spawn_sdf_model_srv)
 
     def spawn_urdf_model(
             self, model_name: str, model_xml: str, robot_namespace: str,
@@ -1539,23 +1520,12 @@ class _GazeboROS(object):
               frame of this model/body, if left empty or "world", then gazebo
               world frame is used
         """
-        req = SpawnModelRequest()
-        req.model_name = model_name
-        req.model_xml = model_xml
-        req.robot_namespace = robot_namespace
-        req.initial_pose.position.x = initial_position[0]
-        req.initial_pose.position.x = initial_position[1]
-        req.initial_pose.position.x = initial_position[2]
-        req.initial_pose.orientation.x = initial_orientation[0]
-        req.initial_pose.orientation.x = initial_orientation[1]
-        req.initial_pose.orientation.x = initial_orientation[2]
-        req.initial_pose.orientation.x = initial_orientation[3]
-        req.reference_frame = reference_frame
-        send_request(self._spawn_urdf_model_srv, req)
+        self._spawn_model(
+            model_name, model_xml, robot_namespace, initial_position,
+            initial_orientation, reference_frame, self._spawn_urdf_model_srv)
 
     def unpause_physics(self):
-        """Unpause the simulation.
-        """
+        """Unpause the simulation."""
         send_request(self._unpause_physics_srv)
     # endregion
 
@@ -1601,15 +1571,34 @@ class _GazeboROS(object):
         else:
             self.set_physics_properties(**physics)
 
-    # endregion
+    def _spawn_model(
+            self, model_name: str, model_xml: str, robot_namespace: str,
+            initial_position: List[float], initial_orientation: List[float],
+            reference_frame: str,
+            srv: Service) -> None:
+        """Helper that avoid duplication between spawn_urdf and spawn_sdf"""
+        req = SpawnModelRequest()
+        req.model_name = model_name
+        req.model_xml = model_xml
+        req.robot_namespace = robot_namespace
+        req.initial_pose.position.x = initial_position[0]
+        req.initial_pose.position.x = initial_position[1]
+        req.initial_pose.position.x = initial_position[2]
+        req.initial_pose.orientation.x = initial_orientation[0]
+        req.initial_pose.orientation.x = initial_orientation[1]
+        req.initial_pose.orientation.x = initial_orientation[2]
+        req.initial_pose.orientation.x = initial_orientation[3]
+        req.reference_frame = reference_frame
+        send_request(srv, req)
 
-    # -- Miscellaneous --
-    # region
+        # endregion
 
-    @contextmanager
+        # -- Miscellaneous --
+        # region
+
+    @ contextmanager
     def pausing(self):
-        """Pausing context
-        """
+        """Pausing context"""
         try:
             self.pause_physics()
             yield
@@ -1619,7 +1608,7 @@ class _GazeboROS(object):
     def __del__(self):
         try:
             self._link_states_sub.unsubscribe()
-        except:
+        except:  # TODO: specify exception type
             pass
         try:
             self._model_states_sub.unsubscribe()
