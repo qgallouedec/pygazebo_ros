@@ -53,6 +53,7 @@ Response = genpy.Message
 Dataclass = Type[genpy.Message]
 Service = Callable[[Request], Response]
 
+
 def subscribe(name: str, data_class: Dataclass,
               callback: Callable[[Message], None],
               timeout: Optional[float] = None) -> rospy.Subscriber:
@@ -75,7 +76,7 @@ def subscribe(name: str, data_class: Dataclass,
 
     Returns:
         rospy.Subscriber: the subscriber; to stop subscription, call its
-          method unsubscribe()
+          method unregister()
     """
     try:
         rospy.logdebug("Waiting for message on topic %s" % name)
@@ -253,9 +254,30 @@ def _state_to_dict(state, i):
                              state.twist[i].angular.z]}
 
 
+def _spawn_model(
+        model_name: str, model_xml: str, robot_namespace: str,
+        initial_position: List[float], initial_orientation: List[float],
+        reference_frame: str,
+        srv: Service) -> None:
+    """Helper that avoid duplication between spawn_urdf and spawn_sdf"""
+    req = SpawnModelRequest()
+    req.model_name = model_name
+    req.model_xml = model_xml
+    req.robot_namespace = robot_namespace
+    req.initial_pose.position.x = initial_position[0]
+    req.initial_pose.position.x = initial_position[1]
+    req.initial_pose.position.x = initial_position[2]
+    req.initial_pose.orientation.x = initial_orientation[0]
+    req.initial_pose.orientation.x = initial_orientation[1]
+    req.initial_pose.orientation.x = initial_orientation[2]
+    req.initial_pose.orientation.x = initial_orientation[3]
+    req.reference_frame = reference_frame
+    send_request(srv, req)
+
+
 class _GazeboROS(object):
 
-    """Class containing only services and topic method"""
+    """Class containing only services and topic method."""
 
     _JOINT_TYPE = [
         'REVOLUTE',    # 1 DOF (rotation)
@@ -275,6 +297,7 @@ class _GazeboROS(object):
             server_required: bool, gui_required: bool):
         self.link_states = {}
         self.model_states = {}
+        self._subscribers = []
 
         if not enable_ros_network:
             rospy.logwarn("`enable_ros_network` is set to False: GazeboROS() \
@@ -414,26 +437,32 @@ class _GazeboROS(object):
         self._link_states_sub = subscribe(
             '/gazebo/link_states', LinkStates,
             self._link_states_callback, timeout=0)
+        self._subscribers.append(self._link_states_sub)
         # /gazebo/model_states
         self._model_states_sub = subscribe(
             '/gazebo/model_states', ModelStates,
             self._model_states_callback, timeout)
+        self._subscribers.append(self._model_states_sub)
         # /gazebo/parameter_descriptions
         self._parameter_descriptions_sub = subscribe(
             '/gazebo/parameter_descriptions', ConfigDescription,
             self._parameter_descriptions_callback, timeout)
+        self._subscribers.append(self._parameter_descriptions_sub)
         # /gazebo/parameter_updates
         self._parameter_updates_sub = subscribe(
             '/gazebo/parameter_updates', Config,
             self._parameter_updates_callback, timeout)
+        self._subscribers.append(self._parameter_updates_sub)
         # /gazebo/set_link_state
         self._set_link_state_sub = subscribe(
             '/gazebo/set_link_state', LinkState,
             self._set_link_state_callback, timeout=0)
+        self._subscribers.append(self._set_link_state_sub)
         # /gazebo/set_model_state
         self._set_model_state_sub = subscribe(
             '/gazebo/set_model_state', ModelState,
             self._set_model_state_callback, timeout=0)
+        self._subscribers.append(self._set_model_state_sub)
 
         rospy.loginfo('All Gazebo subscribers ready')
     # endregion
@@ -859,7 +888,7 @@ class _GazeboROS(object):
 
         Returns:
             Dict:
-                "diffuse" (List[float]): diffuse color [red, green, blue, alpha]
+                "diffuse" (List[float]): diffuse color [r, g, b, a]
                 "attenuation_constant" (float):
                 "attenuation_linear" (float):
                 "attenuation_quadratic" (float):
@@ -966,7 +995,7 @@ class _GazeboROS(object):
         return out
 
     def get_loggers(self) -> Dict:
-        """Get list of loggers
+        """Get list of loggers.
 
         Returns:
             Dict:
@@ -1131,8 +1160,7 @@ class _GazeboROS(object):
         return out
 
     def pause_physics(self) -> None:
-        """Pause the simulation.
-        """
+        """Pause the simulation."""
         send_request(self._pause_physics_srv)
 
     def reset_simulation(self) -> None:
@@ -1289,7 +1317,7 @@ class _GazeboROS(object):
         send_request(self._set_link_state_srv, req)
 
     def set_logger_level(self, logger: str, level: str) -> None:
-        """Set logger level
+        """Set logger level.
 
         Args:
             logger (str): logger name
@@ -1301,8 +1329,8 @@ class _GazeboROS(object):
         send_request(self._set_logger_level_srv, req)
 
     def set_model_configuration(
-            self, model_name: str, urdf_param_name: str, joint_names: List[str],
-            joint_positions: List[float]) -> None:
+            self, model_name: str, urdf_param_name: str,
+            joint_names: List[str], joint_positions: List[float]) -> None:
         """Set model configuration.
 
         Args:
@@ -1382,7 +1410,8 @@ class _GazeboROS(object):
                 'doubles' (List[Dict]): doubles,
                   e.g.  {'name': 'time_step', 'value': 0.001}
                 'groups' (List[Dict]): groups,
-                  e.g.  {'name': 'Default', 'state': True, 'id': 0, 'parent': 0}
+                  e.g.  {'name': 'Default', 'state': True,
+                         'id': 0, 'parent': 0}
         """
         req = ReconfigureRequest()
         for item in bools:
@@ -1497,7 +1526,7 @@ class _GazeboROS(object):
               frame of this model/body, if left empty or "world", then gazebo
               world frame is used
         """
-        self._spawn_model(
+        _spawn_model(
             model_name, model_xml, robot_namespace, initial_position,
             initial_orientation, reference_frame, self._spawn_sdf_model_srv)
 
@@ -1520,7 +1549,7 @@ class _GazeboROS(object):
               frame of this model/body, if left empty or "world", then gazebo
               world frame is used
         """
-        self._spawn_model(
+        _spawn_model(
             model_name, model_xml, robot_namespace, initial_position,
             initial_orientation, reference_frame, self._spawn_urdf_model_srv)
 
@@ -1533,8 +1562,7 @@ class _GazeboROS(object):
     # region
 
     def _fetch_physics_properties(self):
-        """Prive method that update the physics private attributes.
-        """
+        """Fetch and store physics properties into corresponding attributes."""
         physics = self.get_physics_properties()
         rospy.logdebug("Updating physics attributes")
 
@@ -1548,14 +1576,14 @@ class _GazeboROS(object):
         self._sor_pgs_w = physics['sor_pgs_w']
         self._sor_pgs_rms_error_tol = physics['sor_pgs_rms_error_tol']
         self._contact_surface_layer = physics['contact_surface_layer']
-        self._contact_max_correcting_vel = physics['contact_max_correcting_vel']
+        self._contact_max_correcting_vel = physics[
+            'contact_max_correcting_vel']
         self._cfm = physics['cfm']
         self._erp = physics['erp']
         self._max_contacts = physics['max_contacts']
 
     def _set_some_physics_properties(self, **kwargs):
-        """Private method that update physics attributes contained in kwargs
-        """
+        """Update some physics attributes contained in kwargs."""
         if not kwargs:
             rospy.logwarn("An unnecessary request will be sent")
 
@@ -1571,26 +1599,6 @@ class _GazeboROS(object):
         else:
             self.set_physics_properties(**physics)
 
-    def _spawn_model(
-            self, model_name: str, model_xml: str, robot_namespace: str,
-            initial_position: List[float], initial_orientation: List[float],
-            reference_frame: str,
-            srv: Service) -> None:
-        """Helper that avoid duplication between spawn_urdf and spawn_sdf"""
-        req = SpawnModelRequest()
-        req.model_name = model_name
-        req.model_xml = model_xml
-        req.robot_namespace = robot_namespace
-        req.initial_pose.position.x = initial_position[0]
-        req.initial_pose.position.x = initial_position[1]
-        req.initial_pose.position.x = initial_position[2]
-        req.initial_pose.orientation.x = initial_orientation[0]
-        req.initial_pose.orientation.x = initial_orientation[1]
-        req.initial_pose.orientation.x = initial_orientation[2]
-        req.initial_pose.orientation.x = initial_orientation[3]
-        req.reference_frame = reference_frame
-        send_request(srv, req)
-
         # endregion
 
         # -- Miscellaneous --
@@ -1598,7 +1606,7 @@ class _GazeboROS(object):
 
     @ contextmanager
     def pausing(self):
-        """Pausing context"""
+        """Pausing context."""
         try:
             self.pause_physics()
             yield
@@ -1606,30 +1614,8 @@ class _GazeboROS(object):
             self.unpause_physics()
 
     def __del__(self):
-        try:
-            self._link_states_sub.unsubscribe()
-        except:  # TODO: specify exception type
-            pass
-        try:
-            self._model_states_sub.unsubscribe()
-        except:
-            pass
-        try:
-            self._parameter_descriptions_sub.unsubscribe()
-        except:
-            pass
-        try:
-            self._parameter_updates_sub.unsubscribe()
-        except:
-            pass
-        try:
-            self._set_link_state_sub.unsubscribe()
-        except:
-            pass
-        try:
-            self._set_model_state_sub.unsubscribe()
-        except:
-            pass
+        for subscriber in self._subscribers:
+            subscriber.unregister()
 
         rospy.loginfo('All Gazebo subscribers deleted')
     # endregion

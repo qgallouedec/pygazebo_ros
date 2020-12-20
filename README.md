@@ -6,12 +6,16 @@
 
 Install `gazebo-ros` package
 
-    sudo apt install ros-melodic-gazebo-ros
+```bash
+sudo apt install ros-melodic-gazebo-ros
+```
 
 Clone de repository and install it.
 
-    git clone https://github.com/qgallouedec/pygazebo_ros
-    pip install -e pygazebo_ros
+```bash
+git clone https://github.com/qgallouedec/pygazebo_ros
+pip install -e pygazebo_ros
+```
 
 ## Usage
 

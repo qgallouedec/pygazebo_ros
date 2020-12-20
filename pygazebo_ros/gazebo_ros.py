@@ -1,11 +1,13 @@
 # -*- coding:utf:8 -*-
 
-import time 
+import time
 from pygazebo_ros._gazeboo_ros import _GazeboROS
 
-from typing import List, Dict, Optional, Callable, Any, Type
+from typing import List, Optional
+
 
 class GazeboROS(_GazeboROS):
+
     """Encapsulated ROS services, topics and parameters to work with Gazebo
 
     Args:
@@ -61,6 +63,8 @@ class GazeboROS(_GazeboROS):
             respawn_gazebo: bool = False, use_clock_frequency: bool = False,
             pub_clock_frequency: int = 100, enable_ros_network: bool = True,
             server_required: bool = False, gui_required: bool = False):
+        """Constructor."""
+
         super().__init__(
             is_core, paused, use_sim_time, extra_gazebo_args, gui, recording,
             debug, physics, verbose, output, world_name, respawn_gazebo,
@@ -77,7 +81,7 @@ class GazeboROS(_GazeboROS):
             self, model_name: str, link_name: str, force: List[float],
             reference_point: List[float] = [0, 0, 0], start_time: float = 0,
             duration: float = -1.0, reference_frame: str = '') -> None:
-        """[summary]
+        """Apply force to a body.
 
         Args:
             model_name (str): the model containing the link to which to
@@ -103,6 +107,7 @@ class GazeboROS(_GazeboROS):
         start_time_nsecs = int((start_time-start_time_secs)*1e9)
         duration_secs = int(duration)
         duration_nsecs = int((duration-duration_secs)*1e9)
+        reference_point = reference_point.copy()  # list is default arg: safer
         super().apply_body_wrench(
             body_name, reference_frame, reference_point, force, torque,
             start_time_secs, start_time_nsecs, duration_secs, duration_nsecs)
@@ -205,8 +210,8 @@ class GazeboROS(_GazeboROS):
             <sdf version="1.5">
             <light type="point" name='unused_name'>
                 <pose>{x} {y} {z} {yaw} {pitch} {roll}</pose>
-                <diffuse>{diffuse_red} {diffuse_green} {diffuse_blue} {diffuse_alpha}</diffuse>
-                <specular>{specular_red} {specular_green} {specular_blue} {specular_alpha}</specular>
+                <diffuse>{dred} {dgreen} {dblue} {dalpha}</diffuse>
+                <specular>{sred} {sgreen} {sblue} {salpha}</specular>
                 <attenuation>
                     <range>{attenuation_range}</range>
                     <constant>{attenuation_constant}</constant>
@@ -220,10 +225,10 @@ class GazeboROS(_GazeboROS):
         model_xml = template.format(
             x=position[0], y=position[1], z=position[2],
             yaw=yaw, pitch=pitch, roll=roll,
-            diffuse_red=diffuse_red, diffuse_green=diffuse_green,
-            diffuse_blue=diffuse_blue, diffuse_alpha=diffuse_alpha,
-            specular_red=specular_red, specular_green=specular_green,
-            specular_blue=specular_blue, specular_alpha=specular_alpha,
+            dred=diffuse_red, dgreen=diffuse_green,
+            dblue=diffuse_blue, dalpha=diffuse_alpha,
+            sred=specular_red, sgreen=specular_green,
+            sblue=specular_blue, salpha=specular_alpha,
             attenuation_range=attenuation_range,
             attenuation_constant=attenuation_constant,
             attenuation_linear=attenuation_linear,
@@ -332,7 +337,6 @@ if __name__ == "__main__":
                             <xyz>0 0 1</xyz>
                         </axis2>
                     </joint>
-                    
                 </model>
             </sdf>'''
     time.sleep(0.5)
@@ -352,18 +356,23 @@ if __name__ == "__main__":
         start_time_secs=1,
         start_time_nsecs=1,
         duration_secs=-1,
-        duration_nsecs=0
-    )
+        duration_nsecs=0)
 
     time.sleep(2)
 
 
-# (continuous : pivot infini) a hinge joint that rotates on a single axis with a continuous range of motion,
-# (revolute : pivot fini) a hinge joint that rotates on a single axis with a fixed range of motion,
+# (continuous : pivot infini) a hinge joint that rotates on a single
+# axis with a continuous range of motion,
+# (revolute : pivot fini) a hinge joint that rotates on a single axis with
+# a fixed range of motion,
 # (gearbox : reducteur) geared revolute joints,
 # (revolute2 : rotule à doigt) same as two revolute joints connected in series,
-# (prismatic : glissière) a sliding joint that slides along an axis with a limited range specified by upper and lower limits,
+# (prismatic : glissière) a sliding joint that slides along an axis with a
+# limited range specified by upper and lower limits,
 # (ball : rotule) a ball and socket joint,
-# (screw : helicoidale) a single degree of freedom joint with coupled sliding and rotational motion,
-# (universal, rotule à doigt) like a ball joint, but constrains one degree of freedom,
-# (fixed, encastrement) a joint with zero degrees of freedom that rigidly connects two links.
+# (screw : helicoidale) a single degree of freedom joint with coupled sliding
+# and rotational motion,
+# (universal, rotule à doigt) like a ball joint, but constrains one degree of
+# freedom,
+# (fixed, encastrement) a joint with zero degrees of freedom that rigidly
+# connects two links.
