@@ -259,7 +259,7 @@ def _spawn_model(
         initial_position: List[float], initial_orientation: List[float],
         reference_frame: str,
         srv: Service) -> None:
-    """Helper that avoid duplication between spawn_urdf and spawn_sdf"""
+    """Helper that avoid duplication between spawn_urdf and spawn_sdf."""
     req = SpawnModelRequest()
     req.model_name = model_name
     req.model_xml = model_xml
@@ -276,7 +276,6 @@ def _spawn_model(
 
 
 class _GazeboROS(object):
-
     """Class containing only services and topic method."""
 
     _JOINT_TYPE = [

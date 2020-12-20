@@ -3,11 +3,10 @@
 import time
 from pygazebo_ros._gazeboo_ros import _GazeboROS
 
-from typing import List, Optional
+from typing import List
 
 
 class GazeboROS(_GazeboROS):
-
     """Encapsulated ROS services, topics and parameters to work with Gazebo
 
     Args:
@@ -64,7 +63,6 @@ class GazeboROS(_GazeboROS):
             pub_clock_frequency: int = 100, enable_ros_network: bool = True,
             server_required: bool = False, gui_required: bool = False):
         """Constructor."""
-
         super().__init__(
             is_core, paused, use_sim_time, extra_gazebo_args, gui, recording,
             debug, physics, verbose, output, world_name, respawn_gazebo,
