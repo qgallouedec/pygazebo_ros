@@ -273,7 +273,7 @@ class Test_GazeboROS(unittest.TestCase):
             model_name='model_test_1',
             relative_entity_name='')['position']
         for i in range(3):
-            self.assertAlmostEqual(desired_pos[i], pos[i], places=1)
+            self.assertAlmostEqual(desired_pos[i], pos[i], places=0)
 
     def test_set_parameters(self):
         out = gazebo_ros.set_parameters(

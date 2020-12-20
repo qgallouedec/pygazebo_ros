@@ -9,12 +9,38 @@ import roslaunch
 import rospkg
 from std_srvs.srv import Empty
 
-from gazebo_msgs.msg import *
-from gazebo_msgs.srv import *
-from geometry_msgs.msg import *
-from dynamic_reconfigure.msg import *
-from dynamic_reconfigure.srv import *
-from roscpp.srv import *
+from gazebo_msgs.msg import LinkStates, ModelStates, LinkState, ModelState
+from gazebo_msgs.srv import (
+    ApplyBodyWrench, ApplyBodyWrenchRequest,
+    ApplyJointEffort, ApplyJointEffortRequest,
+    BodyRequest, BodyRequestRequest,
+    JointRequest, JointRequestRequest,
+    DeleteLight, DeleteLightRequest,
+    DeleteModel, DeleteModelRequest,
+    GetJointProperties, GetJointPropertiesRequest,
+    GetLightProperties, GetLightPropertiesRequest,
+    GetLinkProperties, GetLinkPropertiesRequest,
+    GetLinkState, GetLinkStateRequest,
+    GetModelProperties, GetModelPropertiesRequest,
+    GetModelState, GetModelStateRequest,
+    GetPhysicsProperties,
+    GetWorldProperties, GetWorldPropertiesRequest,
+    SetJointProperties, SetJointPropertiesRequest,
+    SetLightProperties, SetLightPropertiesRequest,
+    SetLinkProperties, SetLinkPropertiesRequest,
+    SetLinkState, SetLinkStateRequest,
+    SetModelConfiguration, SetModelConfigurationRequest,
+    SetModelState, SetModelStateRequest,
+    SetPhysicsProperties, SetPhysicsPropertiesRequest,
+    SpawnModel, SpawnModelRequest)
+
+from dynamic_reconfigure.msg import (
+    ConfigDescription, Config,
+    BoolParameter, IntParameter, StrParameter, DoubleParameter, GroupState)
+from dynamic_reconfigure.srv import Reconfigure, ReconfigureRequest
+from roscpp.srv import (
+    GetLoggers, GetLoggersRequest,
+    SetLoggerLevel, SetLoggerLevelRequest)
 
 from typing import List, Dict, Optional, Callable, Any, Type
 import genpy
@@ -141,6 +167,45 @@ def service(name: str, service_class: Any,
         else:
             rospy.logdebug("Service %s ready" % name)
             return srv
+
+
+def send_request(
+        srv: Callable[[genpy.Message], genpy.Message],
+        req: Optional[genpy.Message] = None) -> genpy.Message:
+    """Send a request to a service and return the answer.
+
+    Args:
+        srv (Callable[[genpy.Message], genpy.Message]): the service
+        req (Optional[genpy.Message], optional): the request.
+            Defaults to None.
+
+    Raises:
+        Exception: if service call fails
+
+    Returns:
+        genpy.Message: the answer
+    """
+
+    rospy.logdebug('Calling service %s' % srv.resolved_name)
+    if req:
+        ans = srv(req)
+    else:
+        ans = srv()
+    # if answer does not have success attribut, consider it is a success
+    try:
+        success = ans.success
+        status_message = ans.status_message
+    except AttributeError:
+        success = True
+        status_message = 'no status message'
+
+    if not success:
+        rospy.logerr(status_message)
+        raise Exception(status_message)
+    else:
+        rospy.logdebug("Calling to service %s succeed, %s" %
+                       (srv.resolved_name, status_message))
+        return ans
 
 
 class _GazeboROS(object):
@@ -357,8 +422,10 @@ class _GazeboROS(object):
 
     @property
     def time_step(self) -> float:
-        """Get or set the current time_step. Setting the time_step to a new
-        value will reconfigure the gazebo automatically.
+        """Get or set the current time_step.
+
+        Setting the time_step to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._time_step
@@ -369,8 +436,10 @@ class _GazeboROS(object):
 
     @property
     def paused(self):
-        """Get or set the current paused. Setting the paused to a new value
-        will reconfigure the gazebo automatically.
+        """Get or set the current paused.
+
+        Setting the paused to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._paused
@@ -384,8 +453,10 @@ class _GazeboROS(object):
 
     @property
     def max_update_rate(self):
-        """Get or set the current max_update_rate. Setting the max_update_rate
-        to a new value will reconfigure the gazebo automatically.
+        """Get or set the current max_update_rate.
+
+        Setting the max_update_rate to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._max_update_rate
@@ -396,8 +467,10 @@ class _GazeboROS(object):
 
     @property
     def gravity(self) -> List[float]:
-        """Get or set the current gravity. Setting the gravity to a new value
-        will reconfigure the gazebo automatically.
+        """Get or set the current gravity.
+
+        Setting the gravity to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._gravity.copy()
@@ -408,10 +481,9 @@ class _GazeboROS(object):
 
     @property
     def auto_disable_bodies(self):
-        """The current version does not allow to set auto_disable_bodies.
-        Get or set the current auto_disable_bodies. Setting the
-        auto_disable_bodies to a new value will reconfigure the gazebo
-        automatically.
+        """Get the current auto_disable_bodies.
+
+        The current version does not allow to set auto_disable_bodies.
         """
         self._fetch_physics_properties()
         return self._auto_disable_bodies
@@ -424,9 +496,10 @@ class _GazeboROS(object):
 
     @property
     def sor_pgs_precon_iters(self) -> int:
-        """Get or set the current sor_pgs_precon_iters. Setting the
-        sor_pgs_precon_iters to a new value will reconfigure the gazebo
-        automatically.
+        """Get or set the current sor_pgs_precon_iters.
+
+        Setting the sor_pgs_precon_iters to a new value will reconfigure the
+        gazebo automatically.
         """
         self._fetch_physics_properties()
         return self._sor_pgs_precon_iters
@@ -437,8 +510,10 @@ class _GazeboROS(object):
 
     @property
     def sor_pgs_iters(self) -> int:
-        """Get or set the current sor_pgs_iters. Setting the sor_pgs_iters to a
-        new value will reconfigure the gazebo automatically.
+        """Get or set the current sor_pgs_iters.
+
+        Setting the sor_pgs_iters to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._sor_pgs_iters
@@ -449,8 +524,10 @@ class _GazeboROS(object):
 
     @property
     def sor_pgs_w(self) -> float:
-        """Get or set the current sor_pgs_w. Setting the sor_pgs_w to a new
-        value will reconfigure the gazebo automatically.
+        """Get or set the current sor_pgs_w.
+
+        Setting the sor_pgs_w to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._sor_pgs_w
@@ -461,9 +538,9 @@ class _GazeboROS(object):
 
     @property
     def sor_pgs_rms_error_tol(self) -> float:
-        """Get or set the current sor_pgs_rms_error_tol. Setting the
-        sor_pgs_rms_error_tol to a new value will reconfigure the gazebo
-        automatically.
+        """Get or the current sor_pgs_rms_error_tol.
+
+        The current version does not allow to set sor_pgs_rms_error_tol.
         """
         self._fetch_physics_properties()
         return self._sor_pgs_rms_error_tol
@@ -476,9 +553,10 @@ class _GazeboROS(object):
 
     @property
     def contact_surface_layer(self) -> float:
-        """Get or set the current contact_surface_layer. Setting the
-        contact_surface_layer to a new value will reconfigure the gazebo
-        automatically.
+        """Get or set the current contact_surface_layer.
+
+        Setting the contact_surface_layer to a new value will reconfigure the
+        gazebo automatically.
         """
         self._fetch_physics_properties()
         return self._contact_surface_layer
@@ -489,9 +567,10 @@ class _GazeboROS(object):
 
     @property
     def contact_max_correcting_vel(self) -> float:
-        """Get or set the current contact_max_correcting_vel. Setting the
-        contact_max_correcting_vel to a new value will reconfigure the gazebo
-        automatically.
+        """Get or set the current contact_max_correcting_vel.
+
+        Setting the contact_max_correcting_vel to a new value will reconfigure
+        the gazebo automatically.
         """
         self._fetch_physics_properties()
         return self._contact_max_correcting_vel
@@ -502,8 +581,10 @@ class _GazeboROS(object):
 
     @property
     def cfm(self) -> float:
-        """Get or set the current cfm. Setting the cfm to a new value
-        will reconfigure the gazebo automatically.
+        """Get or set the current cfm.
+
+        Setting the cfm to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._cfm
@@ -514,8 +595,10 @@ class _GazeboROS(object):
 
     @property
     def erp(self) -> float:
-        """Get or set the current erp. Setting the erp to a new value
-        will reconfigure the gazebo automatically.
+        """Get or set the current erp.
+
+        Setting the erp to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._erp
@@ -526,8 +609,10 @@ class _GazeboROS(object):
 
     @property
     def max_contacts(self) -> int:
-        """Get or set the current max_contacts. Setting the max_contacts to a
-        new value will reconfigure the gazebo automatically.
+        """Get or set the current max_contacts.
+
+        Setting the max_contacts to a new value will reconfigure the gazebo
+        automatically.
         """
         self._fetch_physics_properties()
         return self._max_contacts
@@ -618,7 +703,7 @@ class _GazeboROS(object):
     #  - Arguments must be standard (floats, integers, dictionaries, strings,
     #    lists).
     #  - These methods convert the arguments to a Request object and then call
-    #    the service with self._send_request().
+    #    the service with send_request().
     #  - If needed, the answer is converted into a Dict or List[Dict]
     #  - If the call fails, it raises an Exception.
     # region
@@ -670,7 +755,7 @@ class _GazeboROS(object):
         req.start_time.nsecs = start_time_nsecs
         req.duration.secs = duration_secs
         req.duration.nsecs = duration_nsecs
-        self._send_request(self._apply_body_wrench_srv, req)
+        send_request(self._apply_body_wrench_srv, req)
 
     def apply_joint_effort(
             self, joint_name: str, effort: float, start_time_secs: int,
@@ -705,7 +790,7 @@ class _GazeboROS(object):
         req.start_time.nsecs = start_time_nsecs
         req.duration.secs = duration_secs
         req.duration.nsecs = duration_nsecs
-        self._send_request(self._apply_joint_effort_srv, req)
+        send_request(self._apply_joint_effort_srv, req)
 
     def clear_body_wrenches(self, body_name: str) -> None:
         """Clear body wrenches.
@@ -715,8 +800,7 @@ class _GazeboROS(object):
         """
         req = BodyRequestRequest()
         req.body_name = body_name
-        self._send_request(
-            self._clear_body_wrenches_srv, req)
+        send_request(self._clear_body_wrenches_srv, req)
 
     def clear_joint_forces(self, joint_name: str) -> None:
         """Clear joint forces.
@@ -726,8 +810,7 @@ class _GazeboROS(object):
         """
         req = JointRequestRequest()
         req.joint_name = joint_name
-        self._send_request(
-            self._clear_joint_forces_srv, req)
+        send_request(self._clear_joint_forces_srv, req)
 
     def delete_light(self, light_name: str) -> None:
         """Delete a light.
@@ -737,7 +820,7 @@ class _GazeboROS(object):
         """
         req = DeleteLightRequest()
         req.light_name = light_name
-        self._send_request(self._delete_light_srv, req)
+        send_request(self._delete_light_srv, req)
 
     def delete_model(self, model_name: str) -> None:
         """Delete a model.
@@ -747,7 +830,7 @@ class _GazeboROS(object):
         """
         req = DeleteModelRequest()
         req.model_name = model_name
-        self._send_request(self._delete_model_srv, req)
+        send_request(self._delete_model_srv, req)
 
     def get_joint_properties(self, joint_name: str) -> Dict:
         """Get joint properties.
@@ -767,7 +850,7 @@ class _GazeboROS(object):
         req = GetJointPropertiesRequest()
         req.joint_name = joint_name
 
-        ans = self._send_request(self._get_joint_properties_srv, req)
+        ans = send_request(self._get_joint_properties_srv, req)
         out = {
             'joint_type': self._JOINT_TYPE[ans.type],
             'damping': list(ans.damping),
@@ -791,7 +874,7 @@ class _GazeboROS(object):
         req = GetLightPropertiesRequest()
         req.light_name = light_name
 
-        ans = self._send_request(self._get_light_properties_srv, req)
+        ans = send_request(self._get_light_properties_srv, req)
         out = {
             'diffuse': [ans.diffuse.r,
                         ans.diffuse.g,
@@ -827,7 +910,7 @@ class _GazeboROS(object):
         req = GetLinkPropertiesRequest()
         req.link_name = link_name
 
-        ans = self._send_request(self._get_link_properties_srv, req)
+        ans = send_request(self._get_link_properties_srv, req)
         out = {
             'position': [ans.com.position.x,
                          ans.com.position.y,
@@ -870,7 +953,7 @@ class _GazeboROS(object):
         req = GetLinkStateRequest()
         req.link_name = link_name
 
-        ans = self._send_request(self._get_link_state_srv, req)
+        ans = send_request(self._get_link_state_srv, req)
         out = {
             'link_name': ans.link_state.link_name,
             'position': [ans.link_state.pose.position.x,
@@ -899,7 +982,7 @@ class _GazeboROS(object):
                     'level' (str) : logger level (debug|info|warn|error|fatal)
         """
         req = GetLoggersRequest()
-        ans = self._send_request(self._get_loggers_srv, req)
+        ans = send_request(self._get_loggers_srv, req)
         out = {}
         for item in ans.loggers:
             out[item.name] = {'level': item.level}
@@ -925,7 +1008,7 @@ class _GazeboROS(object):
         """
         req = GetModelPropertiesRequest()
         req.model_name = model_name
-        ans = self._send_request(self._get_model_properties_srv, req)
+        ans = send_request(self._get_model_properties_srv, req)
         out = {
             'parent_model_name': ans.parent_model_name,
             'canonical_body_name': ans.canonical_body_name,
@@ -967,7 +1050,7 @@ class _GazeboROS(object):
         req = GetModelStateRequest()
         req.model_name = model_name
         req.relative_entity_name = relative_entity_name
-        ans = self._send_request(self._get_model_state_srv, req)
+        ans = send_request(self._get_model_state_srv, req)
         out = {
             'seq': ans.header.seq,
             'secs': ans.header.stamp.secs,
@@ -1017,7 +1100,7 @@ class _GazeboROS(object):
                 "erp" (float): global error reduction parameter
                 "max_contacts" (int): maximum contact joints between two geoms
         """
-        ans = self._send_request(self._get_physics_properties_srv)
+        ans = send_request(self._get_physics_properties_srv)
         ode = ans.ode_config  # to shorten the following
         physics = {
             'time_step': ans.time_step,
@@ -1047,7 +1130,7 @@ class _GazeboROS(object):
                   is enabled, currently always True
         """
         req = GetWorldPropertiesRequest()
-        ans = self._send_request(self._get_world_properties_srv, req)
+        ans = send_request(self._get_world_properties_srv, req)
         out = {
             'sim_time': ans.sim_time,
             'model_names': ans.model_names,
@@ -1057,17 +1140,17 @@ class _GazeboROS(object):
     def pause_physics(self) -> None:
         """Pause the simulation.
         """
-        self._send_request(self._pause_physics_srv)
+        send_request(self._pause_physics_srv)
 
     def reset_simulation(self) -> None:
         """Reset the simulation.
         """
-        self._send_request(self._reset_simulation_srv)
+        send_request(self._reset_simulation_srv)
 
     def reset_world(self) -> None:
         """Reset the world.
         """
-        self._send_request(self._reset_world_srv)
+        send_request(self._reset_world_srv)
 
     def set_joint_properties(
             self, joint_name: str, damping: List[float], hiStop: List[float],
@@ -1105,7 +1188,7 @@ class _GazeboROS(object):
         req.ode_joint_config.fudge_factor = fudge_factor.copy()
         req.ode_joint_config.fmax = fmax.copy()
         req.ode_joint_config.vel = vel.copy()
-        self._send_request(self._set_joint_properties_srv, req)
+        send_request(self._set_joint_properties_srv, req)
 
     def set_light_properties(
             self, light_name: str, diffuse: List[float],
@@ -1129,7 +1212,7 @@ class _GazeboROS(object):
         req.attenuation_constant = attenuation_constant
         req.attenuation_linear = attenuation_linear
         req.attenuation_quadratic = attenuation_quadratic
-        self._send_request(self._set_light_properties_srv, req)
+        send_request(self._set_light_properties_srv, req)
 
     def set_link_properties(
             self, link_name: str, position: List[float],
@@ -1173,7 +1256,7 @@ class _GazeboROS(object):
         req.iyy = iyy
         req.iyz = iyz
         req.izz = izz
-        self._send_request(self._set_link_properties_srv, req)
+        send_request(self._set_link_properties_srv, req)
 
     def set_link_state(
             self, link_name: str, position: List[float],
@@ -1212,7 +1295,7 @@ class _GazeboROS(object):
         req.link_state.twist.angular.y = angular_velocity[1]
         req.link_state.twist.angular.z = angular_velocity[2]
         req.link_state.reference_frame = reference_frame
-        self._send_request(self._set_link_state_srv, req)
+        send_request(self._set_link_state_srv, req)
 
     def set_logger_level(self, logger: str, level: str) -> None:
         """Set logger level
@@ -1224,7 +1307,7 @@ class _GazeboROS(object):
         req = SetLoggerLevelRequest()
         req.logger = logger
         req.level = level
-        self._send_request(self._set_logger_level_srv, req)
+        send_request(self._set_logger_level_srv, req)
 
     def set_model_configuration(
             self, model_name: str, urdf_param_name: str, joint_names: List[str],
@@ -1243,7 +1326,7 @@ class _GazeboROS(object):
         req.urdf_param_name = urdf_param_name
         req.joint_names = joint_names
         req.joint_positions = joint_positions
-        self._send_request(self._set_model_configuration_srv, req)
+        send_request(self._set_model_configuration_srv, req)
 
     def set_model_state(
             self, model_name: str, position: List[float],
@@ -1280,7 +1363,7 @@ class _GazeboROS(object):
         req.model_state.twist.angular.y = angular_velocity[1]
         req.model_state.twist.angular.z = angular_velocity[2]
         req.model_state.reference_frame = reference_frame
-        self._send_request(self._set_model_state_srv, req)
+        send_request(self._set_model_state_srv, req)
 
     def set_parameters(
             self, bools: List[Dict],  ints: List[Dict], strs: List[Dict],
@@ -1338,8 +1421,7 @@ class _GazeboROS(object):
             param.id = item['id']
             param.parent = item['parent']
             req.config.groups.append(param)
-        ans = self._send_request(
-            self._set_parameters_srv, req)
+        ans = send_request(self._set_parameters_srv, req)
         out = {
             'bools': [
                 {'name': item.name, 'value': item.value}
@@ -1395,7 +1477,6 @@ class _GazeboROS(object):
         req.gravity.x = gravity[0]
         req.gravity.y = gravity[1]
         req.gravity.z = gravity[2]
-        req.ode_config = ODEPhysics()
         req.ode_config.auto_disable_bodies = auto_disable_bodies
         req.ode_config.sor_pgs_precon_iters = sor_pgs_precon_iters
         req.ode_config.sor_pgs_iters = sor_pgs_iters
@@ -1406,7 +1487,7 @@ class _GazeboROS(object):
         req.ode_config.cfm = cfm
         req.ode_config.erp = erp
         req.ode_config.max_contacts = max_contacts
-        self._send_request(self._set_physics_properties_srv, req)
+        send_request(self._set_physics_properties_srv, req)
 
     def spawn_sdf_model(
             self, model_name: str, model_xml: str, robot_namespace: str,
@@ -1429,11 +1510,15 @@ class _GazeboROS(object):
         req.model_name = model_name
         req.model_xml = model_xml
         req.robot_namespace = robot_namespace
-        req.initial_pose = Pose(
-            Point(*initial_position),
-            Quaternion(*initial_orientation))
+        req.initial_pose.position.x = initial_position[0]
+        req.initial_pose.position.x = initial_position[1]
+        req.initial_pose.position.x = initial_position[2]
+        req.initial_pose.orientation.x = initial_orientation[0]
+        req.initial_pose.orientation.x = initial_orientation[1]
+        req.initial_pose.orientation.x = initial_orientation[2]
+        req.initial_pose.orientation.x = initial_orientation[3]
         req.reference_frame = reference_frame
-        self._send_request(self._spawn_sdf_model_srv, req)
+        send_request(self._spawn_sdf_model_srv, req)
 
     def spawn_urdf_model(
             self, model_name: str, model_xml: str, robot_namespace: str,
@@ -1458,16 +1543,20 @@ class _GazeboROS(object):
         req.model_name = model_name
         req.model_xml = model_xml
         req.robot_namespace = robot_namespace
-        req.initial_pose = Pose(
-            Point(*initial_position),
-            Quaternion(*initial_orientation))
+        req.initial_pose.position.x = initial_position[0]
+        req.initial_pose.position.x = initial_position[1]
+        req.initial_pose.position.x = initial_position[2]
+        req.initial_pose.orientation.x = initial_orientation[0]
+        req.initial_pose.orientation.x = initial_orientation[1]
+        req.initial_pose.orientation.x = initial_orientation[2]
+        req.initial_pose.orientation.x = initial_orientation[3]
         req.reference_frame = reference_frame
-        self._send_request(self._spawn_urdf_model_srv, req)
+        send_request(self._spawn_urdf_model_srv, req)
 
     def unpause_physics(self):
         """Unpause the simulation.
         """
-        self._send_request(self._unpause_physics_srv)
+        send_request(self._unpause_physics_srv)
     # endregion
 
     # -- Helper (private) methods
@@ -1511,44 +1600,6 @@ class _GazeboROS(object):
             self.unpause_physics()
         else:
             self.set_physics_properties(**physics)
-
-    def _send_request(
-            self, srv: Callable[[genpy.Message], genpy.Message],
-            req: Optional[genpy.Message] = None) -> genpy.Message:
-        """Send a request to a service and return the answer.
-
-        Args:
-            srv (Callable[[genpy.Message], genpy.Message]): the service
-            req (Optional[genpy.Message], optional): the request.
-              Defaults to None.
-
-        Raises:
-            Exception: if service call fails
-
-        Returns:
-            genpy.Message: the answer
-        """
-
-        rospy.logdebug('Calling service %s' % srv.resolved_name)
-        if req:
-            ans = srv(req)
-        else:
-            ans = srv()
-        # if answer does not have success attribut, consider it is a success
-        try:
-            success = ans.success
-            status_message = ans.status_message
-        except AttributeError:
-            success = True
-            status_message = 'no status message'
-
-        if not success:
-            rospy.logerr(status_message)
-            raise Exception(status_message)
-        else:
-            rospy.logdebug("Calling to service %s succeed, %s" %
-                           (srv.resolved_name, status_message))
-            return ans
 
     # endregion
 

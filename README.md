@@ -13,7 +13,7 @@ Clone de repository and install it.
     git clone https://github.com/qgallouedec/pygazebo_ros
     pip install -e pygazebo_ros
 
-# Usage
+## Usage
 
 ```python
 import pygazebo_ros
