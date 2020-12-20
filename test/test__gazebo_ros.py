@@ -1,19 +1,21 @@
 import unittest
-import pygazebo_ros
 
-import rospy
-import roslaunch
+from pygazebo_ros._gazeboo_ros import _GazeboROS
 
-import rospkg
 import os
 import time
 
 test_path = os.path.dirname(os.path.abspath(__file__))
 world_path = os.path.join(test_path, 'launch/world_test.world')
-gazebo_ros = pygazebo_ros.GazeboROS(world_name=world_path)
+gazebo_ros = _GazeboROS(
+    is_core=False, paused=False, use_sim_time=True, extra_gazebo_args='',
+    gui=False, recording=False, debug=False, physics='ode', verbose=False,
+    output='screen', world_name=world_path, respawn_gazebo=False,
+    use_clock_frequency=False, pub_clock_frequency=100,
+    enable_ros_network=True, server_required=False, gui_required=False)
 
 
-class TestGazeboROSServices(unittest.TestCase):
+class Test_GazeboROS(unittest.TestCase):
 
     # -- Getters and setter --
     def test_physics_properties(self):
@@ -367,44 +369,6 @@ class TestGazeboROSServices(unittest.TestCase):
     def test_unpause_physics(self):
         gazebo_ros.unpause_physics()
         self.assertFalse(gazebo_ros.paused)
-
-    # endregion
-
-    # -- Derived method --
-    # region
-    def test_apply_body_force(self):
-        gazebo_ros.apply_body_force(
-            body_name='model_test_4::link',
-            reference_point=[0, 0, 0],
-            force=[0, 0.1, 0.1],
-            start_time=1.000001,
-            reference_frame='model_test_4::link')
-
-    def test_apply_body_torque(self):
-        gazebo_ros.apply_body_torque(
-            body_name='model_test_4::link',
-            torque=[0.1, 0.2, 0.3],
-            start_time=2.000001,
-            reference_frame='model_test_4::link')
-
-    def test_get_sim_time(self):
-        self.assertIsInstance(gazebo_ros.get_sim_time(), float)
-
-    def test_spawn_light(self):
-        gazebo_ros.spawn_light(
-            light_name='testing_light',
-            position=[1.0, 2.0, 3.0],
-            yaw=0.1, pitch=0.2, roll=-0.9,
-            diffuse_red=0.9, diffuse_green=0.8, diffuse_blue=0.7, diffuse_alpha=0.6,
-            specular_red=0.5, specular_green=0.4, specular_blue=0.3, specular_alpha=0.2,
-            attenuation_range=10,
-            attenuation_constant=0.55,
-            attenuation_linear=0.4,
-            attenuation_quadratic=0.3,
-            cast_shadows=True)
-        attenuation_constant = gazebo_ros.get_light_properties(
-            light_name='testing_light')['attenuation_constant']
-        self.assertAlmostEqual(attenuation_constant, 0.55)
 
     # endregion
 

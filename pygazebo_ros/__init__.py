@@ -1,1 +1,1 @@
-from .pygazebo_ros import GazeboROS
+from .gazebo_ros import GazeboROS
