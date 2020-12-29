@@ -4,7 +4,6 @@ import pygazebo_ros
 import os
 import time
 import warnings
-import rospy
 
 
 class TestGazeboROS(unittest.TestCase):
@@ -35,7 +34,7 @@ class TestGazeboROS(unittest.TestCase):
         time_step = self.gazebo_ros.time_step
         self.assertEqual(time_step, 0.005)
 
-    def test_time_step(self):
+    def test_max_update_rate(self):
         self.gazebo_ros.max_update_rate = 500
         max_update_rate = self.gazebo_ros.max_update_rate
         self.assertEqual(max_update_rate, 500)
@@ -43,7 +42,7 @@ class TestGazeboROS(unittest.TestCase):
         max_update_rate = self.gazebo_ros.max_update_rate
         self.assertEqual(max_update_rate, 1000)
 
-    def test_time_step(self):
+    def test_gravity(self):
         self.gazebo_ros.gravity = [1.0, 1.0, -1.0]
         gravity = self.gazebo_ros.gravity
         self.assertEqual(gravity, (1.0, 1.0, -1.0))
@@ -240,7 +239,7 @@ class TestGazeboROS(unittest.TestCase):
         self.assertAlmostEqual(q, 0.6)
 
     def test_get_link_properties(self):
-        out = self.gazebo_ros.get_link_properties(
+        self.gazebo_ros.get_link_properties(
             model_name='model_test_get_link_properties',
             link_name='link_2')
 
@@ -429,7 +428,6 @@ class TestGazeboROS(unittest.TestCase):
             link_name='link_1')[2]
         # the model is re-dropped, then it must be over 5 m.
         self.assertGreater(z, 5)
-        
 
     def test_set_joint_properties(self):
         pass  # see source code
@@ -782,7 +780,7 @@ class TestGazeboROS(unittest.TestCase):
         self.assertIsInstance(names[0], str)
         self.assertIsInstance(rates[0], float)
 
-    def test_set_joint_positions(self):
+    def test_set_joint_position(self):
         self.gazebo_ros.set_joint_position(
             model_name='model_test_set_joint_position',
             joint_name='joint',

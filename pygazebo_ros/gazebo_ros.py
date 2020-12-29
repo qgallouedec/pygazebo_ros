@@ -1804,7 +1804,7 @@ class GazeboROS(_GazeboROS):
             self, position: Position, light_type: str = 'point',
             direction: Direction = (0.0, 0.0, -1.0),
             diffuse: Color = (0.5, 0.5, 0.5, 1.0),
-            specular: Color = (0.1, 0.1, 0.1, 1.0), range: float = 20,
+            specular: Color = (0.1, 0.1, 0.1, 1.0), light_range: float = 20,
             attenuation: Attenuation = (0.5, 0.1, 0.0),
             cast_shadows: bool = False, light_name: Optional[str] = None,
             prefix: str = 'light') -> str:
@@ -1822,7 +1822,7 @@ class GazeboROS(_GazeboROS):
                 (red, green, blue, alpha). Defaults to `(0.5, 0.5, 0.5, 1.0)`.
             specular (Tuple[float, float, float], optional): Specular color as
                 (red, green, blue, alpha). Defaults to `(0.1, 0.1, 0.1, 1.0)`.
-            range (float, optional): Maximum lighting distance. Defaults to
+            light_range (float, optional): Maximum lighting distance. Defaults to
                 `20`.
             attenuation (Tuple[float, float, float], optional): Attenuation
                 as (constant, linear, quadratic). Defaults to
@@ -1945,7 +1945,7 @@ class GazeboROS(_GazeboROS):
                     The units depends on the joint type.
 
         Warning:
-            Do not call this method on models that contain joints among 
+            Do not call this method on models that contain joints among
             REVOLUTE2, UNIVERSAL, BALL, GEAR. More details in
             get_joint_position docstring.
         """
@@ -1969,7 +1969,7 @@ class GazeboROS(_GazeboROS):
                     The units depends on the joint type.
 
         Warning:
-            Do not call this method on models that contain joints among 
+            Do not call this method on models that contain joints among
             REVOLUTE2, UNIVERSAL, BALL, GEAR. More details in
             get_joint_position docstring.
         """

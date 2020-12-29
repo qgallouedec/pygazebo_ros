@@ -153,7 +153,7 @@ def service(name: str, service_class: Any,
 
     Args:
         name (str): Service name (e.g., `'/gazebo/delete_light'`)
-        service_class (Any): Service class 
+        service_class (Any): Service class
             (e.g., `gazebo_msgs.srv.DeleteLight`)
         timeout (float, optional): Raise error if timeout exceded. If `None`,
             wait indefinitely. Defaults to `None`.
@@ -657,7 +657,7 @@ class _GazeboROS(object):
                 If `start_time` < current time, start as soon as possible.
             start_time_nsecs (int): Nano seconds portion of wrench application
                 start time. For more details, see `start_time_secs` arg.
-            duration_secs (int): Seconds portion of wrench application 
+            duration_secs (int): Seconds portion of wrench application
                 duration: `duration = duration_secs + duration_nsecs/10e9`.
                 If `duration` < 0, apply wrench continuously without end.
                 If `duration` = 0, do nothing.
@@ -764,7 +764,7 @@ class _GazeboROS(object):
 
         Returns:
             Dict:
-                'diffuse' (Tuple[float, float, float, float]): Diffuse color as 
+                'diffuse' (Tuple[float, float, float, float]): Diffuse color as
                     (r, g, b, a).
                 'attenuation' (Tuple[float, float, float]): Attenuation as
                     (constant, linear, quadratic).
@@ -975,7 +975,7 @@ class _GazeboROS(object):
                 'time_step' (float): Timestep in seconds.
                 'pause' (bool): `True` if physics engine is paused
                 'max_update_rate' (float): Throttle maximum physics update rate
-                'gravity' (Tuple[float, float, float]): Gravity vector as 
+                'gravity' (Tuple[float, float, float]): Gravity vector as
                     (fx, fy, fz). E.g. earth ~`(0.0, 0.0, -9.8)`.
                 'auto_disable_bodies' (bool): Enable auto disabling of bodies.
                 'sor_pgs_precon_iters' (int): Preconditioning inner iterations
@@ -1062,7 +1062,7 @@ class _GazeboROS(object):
             cfm (List[float]): Set joint cfm.
             stop_erp (List[float]): Set joint erp for joint limit "contact"
                 joint.
-            stop_cfm (List[float]): Set joint cfm for joint limit "contact" 
+            stop_cfm (List[float]): Set joint cfm for joint limit "contact"
                 joint.
             fudge_factor (List[float]): Joint `fudge_factor` applied at limits,
                 see ODE manual for info.
@@ -1189,7 +1189,7 @@ class _GazeboROS(object):
 
         Args:
             logger (str): Logger name.
-            level (str): Logger level 
+            level (str): Logger level
                 (`'debug'`|`'info'`|`'warn'`|`'error'`|`'fatal'`).
         """
         req = SetLoggerLevelRequest()
@@ -1219,7 +1219,7 @@ class _GazeboROS(object):
         send_request(self._set_model_configuration_srv, req)
 
     def set_model_state(
-            self, model_name: str, position: Position, 
+            self, model_name: str, position: Position,
             orientation: Orientation,
             linear_velocity: Tuple[float, float, float],
             angular_velocity: Tuple[float, float, float],
@@ -1350,7 +1350,7 @@ class _GazeboROS(object):
         Args:
             time_step (float): Timestep in seconds.
             max_update_rate (float): Throttle maximum physics update rate
-            gravity (Tuple[float, float, float]): Gravity vector as 
+            gravity (Tuple[float, float, float]): Gravity vector as
                 (fx, fy, fz). E.g. earth ~`(0.0, 0.0, -9.8)`.
             auto_disable_bodies (bool): Enable auto disabling of bodies.
             sor_pgs_precon_iters (int): Preconditioning inner iterations when
@@ -1401,7 +1401,7 @@ class _GazeboROS(object):
                 this namespace.
             initial_position (Tuple[float, float, float]): Position of
                 canonical body as (x, y, z).
-            initial_orientation (Tuple[float, float, float, float]): 
+            initial_orientation (Tuple[float, float, float, float]):
                 Orientation of canonical body as quaternion (x, y, z, w).
             reference_frame (str): Pose/twist relative to the frame of
                 this link/bodyL leave empty or `'world'` or `'map'`.
@@ -1424,7 +1424,7 @@ class _GazeboROS(object):
                 this namespace.
             initial_position (Tuple[float, float, float]): Position of
                 canonical body as (x, y, z).
-            initial_orientation (Tuple[float, float, float, float]): 
+            initial_orientation (Tuple[float, float, float, float]):
                 Orientation of canonical body as quaternion (x, y, z, w).
             reference_frame (str): Pose/twist relative to the frame of
                 this link/bodyL leave empty or `'world'` or `'map'`.
