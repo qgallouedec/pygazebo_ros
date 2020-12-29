@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+    <model name="unused_name">
+        <static>False</static>
+        <link name="link">
+        <pose>0 0 0 0 0 0</pose>
+            <inertial>
+                <inertia>
+                    <ixx>0.1</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>0.1</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.1</izz>
+                </inertia>
+                <mass>1</mass>
+            </inertial>
+            <collision name="collision">
+                <geometry>
+                    <polyline>
+                        <point> 0.00 -0.50</point>
+                        <point> 0.50 -0.25</point>
+                        <point> 0.50  0.25</point>
+                        <point> 0.00  0.50</point>
+                        <point>-0.50  0.25</point>
+                        <point>-0.50 -0.25</point>
+                        <height>2.0</height>
+                    </polyline>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <polyline>
+                        <point> 0.00 -0.50</point>
+                        <point> 0.50 -0.25</point>
+                        <point> 0.50  0.25</point>
+                        <point> 0.00  0.50</point>
+                        <point>-0.50  0.25</point>
+                        <point>-0.50 -0.25</point>
+                        <height>2.0</height>
+                    </polyline>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>
+        

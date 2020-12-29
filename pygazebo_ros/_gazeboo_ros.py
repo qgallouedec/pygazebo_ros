@@ -7,6 +7,7 @@ import sys
 import rospy
 import roslaunch
 import rospkg
+import rosgraph
 from std_srvs.srv import Empty
 
 from gazebo_msgs.msg import LinkStates, ModelStates, LinkState, ModelState
@@ -42,7 +43,7 @@ from roscpp.srv import (
     GetLoggers, GetLoggersRequest,
     SetLoggerLevel, SetLoggerLevelRequest)
 
-from typing import List, Dict, Optional, Callable, Any, Type
+from typing import List, Dict, Optional, Callable, Any, Type, Tuple
 import genpy
 
 from contextlib import contextmanager
@@ -52,31 +53,37 @@ Request = genpy.Message
 Response = genpy.Message
 Dataclass = Type[genpy.Message]
 Service = Callable[[Request], Response]
+Position = Tuple[float, float, float]
+Orientation = Tuple[float, float, float, float]
+Force = Tuple[float, float, float]
+Torque = Tuple[float, float, float]
+Direction = Tuple[float, float, float]
+Color = Tuple[float, float, float]
+Attenuation = Tuple[float, float, float]
 
 
 def subscribe(name: str, data_class: Dataclass,
               callback: Callable[[Message], None],
               timeout: Optional[float] = None) -> rospy.Subscriber:
-    """Registering as a subscriber to a topic
+    """Registering as a subscriber to a topic.
 
     Args:
-        name (str): topic name
-        data_class (Dataclass): data class of the topic
-        callback (Callable[[Message], None]): the function called each
-          time a message is published on the topic
-        timeout (Optional[float], optional): raise error if no message is
-          published on the topic after a time; if None, does not wait for a
-          message to be published. Defaults to None.
+        name (str): Topic name.
+        data_class (Type[Message]): Data class of the topic.
+        callback (Callable[[Message], None]): The function called each
+            time a message is published on the topic.
+        timeout (float, optional): Raise error if no message is published on
+            the topic after a time. If `None`, does not wait for a message to
+            be published. Defaults to `None`.
 
     Raises:
-        rospy.ROSInterruptException: rospy.ROSInterruptException: if waiting
-          is interrupted
-        TimeoutError: if no message is published on the topic after
-          `timeout` seconds; set `timeout` to None not to raise this error.
+        ROSInterruptException: If waiting is interrupted.
+        TimeoutError: If no message is published on the topic after
+          `timeout` seconds. Set `timeout` to `None` not to raise this error.
 
     Returns:
-        rospy.Subscriber: the subscriber; to stop subscription, call its
-          method unregister()
+        Subscriber: The subscriber. To stop subscription, call its method
+            `unregister()`.
     """
     try:
         rospy.logdebug("Waiting for message on topic %s" % name)
@@ -100,20 +107,20 @@ def publisher(name: str, data_class: Dataclass,
     """Registering as a publisher of a ROS topic.
 
     Args:
-        name (str): topic name
-        data_class (Dataclass): the data class
-        timeout (Optional[float], optional): raise error if nobody subscribe to
-          the topic after a time; if None, does not wait for a subscriber.
-          Defaults to None.
+        name (str): Topic name.
+        data_class (Type[Message]): Data class of the topic.
+        timeout (float, optional): Raises an error if no subscriber is detected
+            on the topic after `timeout` seconds. If `None`, does not wait for
+            a subscriber. Defaults to `None`.
 
     Raises:
-        TimeoutError: if nobody subscribe to the topic after `timeout` seconds;
-          set `timeout` to None not to raise this exception
-        rospy.ROSInterruptException: if waiting is interrupted
+        ROSInterruptException: If waiting is interrupted.
+        TimeoutError: If no subscriber is detected on the topic after `timeout`
+            seconds. Set `timeout` to `None` not to raise this exception.
 
     Returns:
-        rospy.Publisher: the publisher; to publish a message, call its method
-          publish(your_msg)
+        Publisher: The publisher. To publish a message, call its method
+            `publish(your_msg)`.
     """
     start = time.time()
     pub = rospy.Publisher(name, data_class, queue_size=1)
@@ -145,17 +152,19 @@ def service(name: str, service_class: Any,
     """Create a handle to a ROS service for invoking calls.
 
     Args:
-        name (str): service name (e.g., '/gazebo/delete_light')
-        service_class (Any): Service class (e.g., gazebo_msgs.srv.DeleteLight)
-        timeout (Optional[float], optional): raise error if timeout exceded;
-          if None, wait indefinitely. Defaults to None.
+        name (str): Service name (e.g., `'/gazebo/delete_light'`)
+        service_class (Any): Service class 
+            (e.g., `gazebo_msgs.srv.DeleteLight`)
+        timeout (float, optional): Raise error if timeout exceded. If `None`,
+            wait indefinitely. Defaults to `None`.
 
     Raises:
-        rospy.ROSInterruptException: if waiting is interrupted
-        TimeoutError: if timeout exceded
+        ROSInterruptException: If waiting is interrupted.
+        TimeoutError: If timeout exceded.
 
     Returns:
-        rospy.ServiceProxy: the service proxy
+        ServiceProxy: The service proxy. To send a request, call this instance:
+            `my_service(my_resquest)`.
     """
     while not rospy.is_shutdown():
         try:
@@ -175,21 +184,18 @@ def service(name: str, service_class: Any,
             return srv
 
 
-def send_request(
-        srv: Service,
-        req: Optional[Request] = None) -> Response:
+def send_request(srv: Service, req: Optional[Request] = None) -> Response:
     """Send a request to a service and return the answer.
 
     Args:
-        srv (Service): the service
-        req (Optional[Request], optional): the request.
-            Defaults to None.
+        srv (Callable[[Message], Message]): The service.
+        req (Message, optional): The request. Defaults to `None`.
 
     Raises:
-        Exception: if service call fails
+        Exception: If service call fails
 
     Returns:
-        Reponse: the answer
+        Message: The answer.
     """
     rospy.logdebug('Calling service %s' % srv.resolved_name)
     if req:
@@ -217,6 +223,7 @@ def _parse_args(paused, use_sim_time, extra_gazebo_args, gui,
                 recording, debug, physics, verbose, output, world_name,
                 respawn_gazebo, use_clock_frequency, pub_clock_frequency,
                 enable_ros_network, server_required, gui_required):
+    """Add the args to command line arguments passed to the Python script."""
     sys.argv.append('paused:={}'.format(str(paused).lower()))
     sys.argv.append('use_sim_time:={}'.format(str(use_sim_time).lower()))
     sys.argv.append('extra_gazebo_args:={}'.format(extra_gazebo_args))
@@ -238,6 +245,7 @@ def _parse_args(paused, use_sim_time, extra_gazebo_args, gui,
 
 
 def _state_to_dict(state, i):
+    """Helper function that turn state object in dict object."""
     return {
         'postion': [state.pose[i].position.x,
                     state.pose[i].position.y,
@@ -256,27 +264,77 @@ def _state_to_dict(state, i):
 
 def _spawn_model(
         model_name: str, model_xml: str, robot_namespace: str,
-        initial_position: List[float], initial_orientation: List[float],
-        reference_frame: str,
-        srv: Service) -> None:
-    """Helper that avoid duplication between spawn_urdf and spawn_sdf."""
+        initial_position: Position,
+        initial_orientation: Tuple[float, float, float, float],
+        srv: Service, reference_frame: str) -> None:
+    """Helper that avoid duplication between `spawn_urdf` and `spawn_sdf`."""
     req = SpawnModelRequest()
     req.model_name = model_name
     req.model_xml = model_xml
     req.robot_namespace = robot_namespace
     req.initial_pose.position.x = initial_position[0]
-    req.initial_pose.position.x = initial_position[1]
-    req.initial_pose.position.x = initial_position[2]
+    req.initial_pose.position.y = initial_position[1]
+    req.initial_pose.position.z = initial_position[2]
     req.initial_pose.orientation.x = initial_orientation[0]
-    req.initial_pose.orientation.x = initial_orientation[1]
-    req.initial_pose.orientation.x = initial_orientation[2]
-    req.initial_pose.orientation.x = initial_orientation[3]
+    req.initial_pose.orientation.y = initial_orientation[1]
+    req.initial_pose.orientation.z = initial_orientation[2]
+    req.initial_pose.orientation.w = initial_orientation[3]
     req.reference_frame = reference_frame
     send_request(srv, req)
 
 
+def run_roscore():
+    """Run a roscore, after verifying no roscore is running"""
+    if rosgraph.is_master_online():
+        raise Exception('A master is already running.')
+    uuid = roslaunch.rlutil.get_or_generate_uuid(
+        options_runid=None, options_wait_for_master=False)
+    roslaunch.configure_logging(uuid)
+    launch = roslaunch.parent.ROSLaunchParent(uuid, [], True)
+    launch.start()
+    return launch
+
+
 class _GazeboROS(object):
-    """Class containing only services and topic method."""
+    """Class containing a user-friendly functions for `gazebo_ros` services.
+
+    Args:
+        is_core (bool): Set `False` if a rosocre is already running.
+            If `False`, but no core is running, it starts one.
+        paused (bool): Start Gazebo in a paused state.
+        use_sim_time (bool): Use Gazebo time instead of real time.
+        extra_gazebo_args (str): Extra args. Defaults to `''`.
+        gui (bool): Launch the user interface window of Gazebo.
+        recording (bool): Enable Gazebo state log recording. Previously called
+            `headless`.
+        debug (bool): Start `gzserver` (Gazebo Server) in debug mode
+            using `gdb`.
+        physics (str): Specify a physics engine.
+            (`'ode'`|`'bullet'`|`'dart'`|`'simbody'`).
+        verbose (bool): Run `gzserver` and `gzclient` with in verbose
+            mode : printing errors and warnings to the terminal.
+        output (str): (`'log'`|`'screen'`)
+            If `'screen'`, stdout/stderr is sent to the screen
+            If `'log'`, the stdout/stderr is sent to a log file in
+            `$ROS_HOME/log`, and stderr continue to be sent to screen.
+        world_name (str): The world name with respect to
+            `GAZEBO_RESOURCE_PATH` environmental variable.
+        respawn_gazebo (bool): Restart the Gazebo node automatically
+            if it quits.
+        use_clock_frequency (bool): Whether you modify Gazebo's
+            `/clock` frequency (default to 1000 Hz); if `True`, set new clock
+            frequency with `pub_clock_frequency` arg.
+        pub_clock_frequency (int): Set Gazebo’s `/clock` publish
+            frequency (Hz). Requires `use_clock_frequency` to be `True`.
+        enable_ros_network (bool): If `False`, disable all the Gazebo
+            ROS topics (except `/clock`) and services that are created from the
+            `gazebo_ros` package. Beware, by choosing `False`, you will no
+            longer be able to use most of the methods in this class.
+        server_required (bool): Terminate launch script when
+            `gzserver` Gazebo Server exits.
+        gui_required (bool): Terminate launch script when `gzclient`
+            (user interface window) exits.
+    """
 
     _JOINT_TYPE = [
         'REVOLUTE',    # 1 DOF (rotation)
@@ -310,8 +368,13 @@ class _GazeboROS(object):
             use_clock_frequency, pub_clock_frequency, enable_ros_network,
             server_required, gui_required)
 
+        if is_core:
+            self.core = run_roscore()
+        else:
+            self.core = None
+
         # launch world (and roscore)
-        self._launch_world(is_core)
+        self._launch_world()
 
         # init this node
         rospy.init_node('pygazebo_node', anonymous=True, log_level=rospy.ERROR)
@@ -320,24 +383,27 @@ class _GazeboROS(object):
         self._connect_services()
         self._connect_topics()
 
+        rospy.on_shutdown(self.shutdown)
+
         # --- Init methods ---
     # For some parameters it is convenient to use getters and setters.
     # Should not be used with parameters that could change without user
     # action (example: sim_time).
     # region
 
-    def _launch_world(self, is_core):
+    def _launch_world(self):
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(
-            options_runid=None, options_wait_for_master=False)
+            options_runid=None, options_wait_for_master=True)
         roslaunch.configure_logging(self.uuid)
         gazebo_ros_path = rospkg.RosPack().get_path('gazebo_ros')
         launch_path = os.path.join(
             gazebo_ros_path, 'launch/empty_world.launch')
-        launch = roslaunch.parent.ROSLaunchParent(
-            self.uuid, [launch_path], is_core, is_rostest=True)
-        launch.start()
+        self._launch = roslaunch.parent.ROSLaunchParent(
+            self.uuid, [launch_path], False)
+        self._launch.start()
 
     def _connect_services(self, timeout=None):
+        """Connects to all available gazebo_ros services."""
         # /gazebo/apply_body_wrench
         self._apply_body_wrench_srv = service(
             '/gazebo/apply_body_wrench', ApplyBodyWrench, timeout)
@@ -432,6 +498,7 @@ class _GazeboROS(object):
         rospy.loginfo('All Gazebo services ready')
 
     def _connect_topics(self, timeout=None):
+        """Subscribe to every gazebo_ros topics."""
         # /gazebo/link_states
         self._link_states_sub = subscribe(
             '/gazebo/link_states', LinkStates,
@@ -464,211 +531,6 @@ class _GazeboROS(object):
         self._subscribers.append(self._set_model_state_sub)
 
         rospy.loginfo('All Gazebo subscribers ready')
-    # endregion
-
-    # --- Getters and setters --
-    # region
-
-    @property
-    def time_step(self) -> float:
-        """Get or set the current time_step.
-
-        Setting the time_step to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._time_step
-
-    @time_step.setter
-    def time_step(self, value: float) -> None:
-        self._set_some_physics_properties(time_step=value)
-
-    @property
-    def paused(self):
-        """Get or set the current paused.
-
-        Setting the paused to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._paused
-
-    @paused.setter
-    def paused(self, value: bool) -> None:
-        if value:
-            self.pause_physics()
-        else:
-            self.unpause_physics()
-
-    @property
-    def max_update_rate(self):
-        """Get or set the current max_update_rate.
-
-        Setting the max_update_rate to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._max_update_rate
-
-    @max_update_rate.setter
-    def max_update_rate(self, value: float) -> None:
-        self._set_some_physics_properties(max_update_rate=value)
-
-    @property
-    def gravity(self) -> List[float]:
-        """Get or set the current gravity.
-
-        Setting the gravity to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._gravity.copy()
-
-    @gravity.setter
-    def gravity(self, value: List[float]) -> None:
-        self._set_some_physics_properties(gravity=value)
-
-    @property
-    def auto_disable_bodies(self):
-        """Get the current auto_disable_bodies.
-
-        The current version does not allow to set auto_disable_bodies.
-        """
-        self._fetch_physics_properties()
-        return self._auto_disable_bodies
-
-    @auto_disable_bodies.setter
-    def auto_disable_bodies(self, value: bool) -> None:
-        rospy.logwarn(
-            'The current version does not allow to set auto_disable_bodies.')
-        self._set_some_physics_properties(auto_disable_bodies=value)
-
-    @property
-    def sor_pgs_precon_iters(self) -> int:
-        """Get or set the current sor_pgs_precon_iters.
-
-        Setting the sor_pgs_precon_iters to a new value will reconfigure the
-        gazebo automatically.
-        """
-        self._fetch_physics_properties()
-        return self._sor_pgs_precon_iters
-
-    @sor_pgs_precon_iters.setter
-    def sor_pgs_precon_iters(self, value: int) -> None:
-        self._set_some_physics_properties(sor_pgs_precon_iters=value)
-
-    @property
-    def sor_pgs_iters(self) -> int:
-        """Get or set the current sor_pgs_iters.
-
-        Setting the sor_pgs_iters to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._sor_pgs_iters
-
-    @sor_pgs_iters.setter
-    def sor_pgs_iters(self, value: int) -> None:
-        self._set_some_physics_properties(sor_pgs_iters=value)
-
-    @property
-    def sor_pgs_w(self) -> float:
-        """Get or set the current sor_pgs_w.
-
-        Setting the sor_pgs_w to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._sor_pgs_w
-
-    @sor_pgs_w.setter
-    def sor_pgs_w(self, value: float) -> None:
-        self._set_some_physics_properties(sor_pgs_w=value)
-
-    @property
-    def sor_pgs_rms_error_tol(self) -> float:
-        """Get or the current sor_pgs_rms_error_tol.
-
-        The current version does not allow to set sor_pgs_rms_error_tol.
-        """
-        self._fetch_physics_properties()
-        return self._sor_pgs_rms_error_tol
-
-    @sor_pgs_rms_error_tol.setter
-    def sor_pgs_rms_error_tol(self, value: float) -> None:
-        rospy.logwarn(
-            'The current version does not allow to set sor_pgs_rms_error_tol.')
-        self._set_some_physics_properties(sor_pgs_rms_error_tol=value)
-
-    @property
-    def contact_surface_layer(self) -> float:
-        """Get or set the current contact_surface_layer.
-
-        Setting the contact_surface_layer to a new value will reconfigure the
-        gazebo automatically.
-        """
-        self._fetch_physics_properties()
-        return self._contact_surface_layer
-
-    @contact_surface_layer.setter
-    def contact_surface_layer(self, value: float) -> None:
-        self._set_some_physics_properties(contact_surface_layer=value)
-
-    @property
-    def contact_max_correcting_vel(self) -> float:
-        """Get or set the current contact_max_correcting_vel.
-
-        Setting the contact_max_correcting_vel to a new value will reconfigure
-        the gazebo automatically.
-        """
-        self._fetch_physics_properties()
-        return self._contact_max_correcting_vel
-
-    @contact_max_correcting_vel.setter
-    def contact_max_correcting_vel(self, value: float) -> None:
-        self._set_some_physics_properties(contact_max_correcting_vel=value)
-
-    @property
-    def cfm(self) -> float:
-        """Get or set the current cfm.
-
-        Setting the cfm to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._cfm
-
-    @cfm.setter
-    def cfm(self, value: float) -> None:
-        self._set_some_physics_properties(cfm=value)
-
-    @property
-    def erp(self) -> float:
-        """Get or set the current erp.
-
-        Setting the erp to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._erp
-
-    @erp.setter
-    def erp(self, value: float) -> None:
-        self._set_some_physics_properties(erp=value)
-
-    @property
-    def max_contacts(self) -> int:
-        """Get or set the current max_contacts.
-
-        Setting the max_contacts to a new value will reconfigure the gazebo
-        automatically.
-        """
-        self._fetch_physics_properties()
-        return self._max_contacts
-
-    @max_contacts.setter
-    def max_contacts(self, value: int) -> None:
-        self._set_some_physics_properties(max_contacts=value)
 
     # endregion
 
@@ -688,30 +550,30 @@ class _GazeboROS(object):
             self.model_states[value.name[i]] = _state_to_dict(value, i)
 
     def _parameter_descriptions_callback(self, value):
-        # NOTE: it seems like gazebo subscribe to this this topic instead of
+        # NOTE: it seems like Gazebo subscribe to this this topic instead of
         # publishing. If it is the case, this callback is not necessary.
-        # a message is published once when gazebo start.
+        # a message is published once when Gazebo start.
         # I should look for the publisher.
         rospy.logwarn_once('parameter_descriptions_callback not implemented')
 
     def _parameter_updates_callback(self, value):
-        # NOTE: it seems like gazebo subscribe to this this topic instead of
+        # NOTE: it seems like Gazebo subscribe to this this topic instead of
         # publishing. If it is the case, this callback is not necessary.
-        # a message is published once when gazebo start.
+        # a message is published once when Gazebo start.
         # I should look for the publisher.
         rospy.logwarn_once('parameter_updates_callback not implemented')
 
     def _set_link_state_callback(self, value):
-        # NOTE: it seems like gazebo subscribe to this this topic instead of
+        # NOTE: it seems like Gazebo subscribe to this this topic instead of
         # publishing. If it is the case, this callback is not necessary.
-        # a message is published once when gazebo start.
+        # a message is published once when Gazebo start.
         # I should look for the publisher.
         rospy.logwarn_once('set_link_state_callback not implemented')
 
     def _set_model_state_callback(self, value):
-        # NOTE: it seems like gazebo subscribe to this this topic instead of
+        # NOTE: it seems like Gazebo subscribe to this this topic instead of
         # publishing. If it is the case, this callback is not necessary.
-        # a message is published once when gazebo start.
+        # a message is published once when Gazebo start.
         # I should look for the publisher.
         rospy.logwarn_once('set_model_state_callback not implemented')
 
@@ -730,35 +592,37 @@ class _GazeboROS(object):
     # region
 
     def apply_body_wrench(
-            self, body_name: str, reference_frame: str,
-            reference_point: List[float], force: List[float],
-            torque: List[float], start_time_secs: int, start_time_nsecs: int,
-            duration_secs: int, duration_nsecs: int) -> None:
-        """Apply Wrench to Gazebo Body.
+            self, body_name: str, reference_point: Tuple[float, float, float],
+            force: Force, torque: Torque, start_time_secs: int,
+            start_time_nsecs: int, duration_secs: int, duration_nsecs: int,
+            reference_frame: str) -> None:
+        """Apply wrench (force and torque) to a link.
 
         Args:
-            body_name (str): Gazebo body to apply wrench (linear force and
-              torque); body names are prefixed by model name,
-              e.g. `model_name::link_name`
-            reference_frame (str, optional): wrench is defined in the reference
-              frame of this entity; use inertial frame if left empty.
-              Defaults to ''.
-            reference_point (List[float]): wrench is defined at this location
-              in the reference frame
-            force (List[float]): force applied to the origin of the body
-            torque (List[float]): torque applied to the origin of the body
-            start_time_secs (int): seconds portion of wrench application start
-              time (start_time = start_time_secs + start_time_nsecs/10e9); if
-              start_time < current time, start as soon as possible.
-            start_time_nsecs (int): nano seconds portion of wrench application
-              start time; see `start_time_secs` arg.
-            duration_secs (int): seconds portion of wrench application duration
-              (duration = duration_secs + duration_nsecs/10e9);
-              if duration < 0, apply wrench continuously without end
-              if duration = 0, do nothing
-              if duration < step size, apply wrench for one step size
-            duration_nsecs (int): nano seconds portion of wrench application
-              duration; see `duration_secs` arg.
+            body_name (str): The name of the body, respecting the format
+                `'<model_name>::<link_name>'`.
+            reference_point (Tuple[float, float, float], optional): Wrench is
+                defined at this location in the reference frame. Use
+                `(0, 0, 0)` to apply at the center of mass. Default
+                `(0, 0, 0)`.
+            force (Tuple[float, float, float]): Force applied to the body as
+                (fx, fy, fz).
+            torque (Tuple[float, float, float]): Torque applied to the body as
+                (cx, cy, cz).
+            start_time_secs (int): Wrench application start time
+                (in seconds).
+                Seconds portion of wrench application start time:
+                `start_time = start_time_secs + start_time_nsecs/10e9`. If
+                `start_time` < current time, start as soon as possible.
+            start_time_nsecs (int): Nano seconds portion of wrench application
+                start time. For more details, see `start_time_secs`.
+            duration_secs (int): Seconds portion of wrench application
+                duration: `duration = duration_secs + duration_nsecs/10e9`
+                If `duration` < 0, apply wrench continuously.
+            duration_nsecs (int): Nano seconds portion of wrench application
+                duration. For more details, see `duration_secs` arg.
+            reference_frame (str): Wrench is defined in the reference
+                frame of this entity. Use inertial frame if left empty.
         """
         req = ApplyBodyWrenchRequest()
         req.body_name = body_name
@@ -782,23 +646,28 @@ class _GazeboROS(object):
             self, joint_name: str, effort: float, start_time_secs: int,
             start_time_nsecs: int, duration_secs: int,
             duration_nsecs: int) -> None:
-        """Set urdf joint effort.
+        """Set joint effort.
 
         Args:
-            joint_name (str): joint to apply wrench (linear force and torque)
-            effort (float): effort to apply
-            start_time_secs (int): seconds portion of wrench application start
-              time (start_time = start_time_secs + start_time_nsecs/1e9);
-              if start_time < current time, start as soon as possible
-            start_time_nsecs (int): nano seconds portion of wrench application
-              start time; see `start_time_secs` arg.
-            duration_secs (int): seconds portion of wrench application duration
-              (duration = duration_secs + duration_nsecs/10e9);
-              if duration < 0, apply wrench continuously without end
-              if duration = 0, do nothing
-            if duration < step size, assume step size
-            duration_nsecs (int): nano seconds portion of wrench application
-              duration; see `duration_secs` arg.
+            joint_name (str): Joint to apply wrench (linear force and torque),
+                respecting the format `'<model_name>::<joint_name>'`.
+            effort (float): Effort to apply.
+            start_time_secs (int): Seconds portion of wrench application start
+                time: `start_time = start_time_secs + start_time_nsecs/1e9`.
+                If `start_time` < current time, start as soon as possible.
+            start_time_nsecs (int): Nano seconds portion of wrench application
+                start time. For more details, see `start_time_secs` arg.
+            duration_secs (int): Seconds portion of wrench application 
+                duration: `duration = duration_secs + duration_nsecs/10e9`.
+                If `duration` < 0, apply wrench continuously without end.
+                If `duration` = 0, do nothing.
+                If `duration` < step size, assume step size.
+            duration_nsecs (int): Nano seconds portion of wrench application
+                duration. For more details see `duration_secs` arg.
+
+        Warning:
+            You should not use this method on joints revolute2, universal,
+            fixed and ball.
         """
         # After verification in the source code of gazebo_ros, you can't use
         # this srv to apply joint effort of 2nd axis of revolute2 and
@@ -817,7 +686,8 @@ class _GazeboROS(object):
         """Clear body wrenches.
 
         Args:
-            body_name (str): body name
+            body_name (str): The body name, respecting the format
+            `'<model_name>::<link_name>'`.
         """
         req = BodyRequestRequest()
         req.body_name = body_name
@@ -827,7 +697,8 @@ class _GazeboROS(object):
         """Clear joint forces.
 
         Args:
-            joint_name (str): joint name e.g., body_name::joint_name
+            joint_name (str): The joint name, respecting the format
+                `'<model_name>::<joint_name>'`.
         """
         req = JointRequestRequest()
         req.joint_name = joint_name
@@ -837,7 +708,7 @@ class _GazeboROS(object):
         """Delete a light.
 
         Args:
-            light_name (str): name of the light to be deleted
+            light_name (str): Name of the light to be deleted.
         """
         req = DeleteLightRequest()
         req.light_name = light_name
@@ -847,7 +718,7 @@ class _GazeboROS(object):
         """Delete a model.
 
         Args:
-            model_name (str): name of the Gazebo Model to be deleted
+            model_name (str): Name of the model to be deleted.
         """
         req = DeleteModelRequest()
         req.model_name = model_name
@@ -857,20 +728,26 @@ class _GazeboROS(object):
         """Get joint properties.
 
         Args:
-            joint_name (str): the joint name
+            joint_name (str): The joint name, respecting the format
+                `'<model_name>::<joint_name>'`.
 
         Returns:
             Dict:
-                "joint_type" (str): 'REVOLUTE', 'CONTINUOUS', 'PRISMATIC',
-                  'FIXED', 'BALL' or 'UNIVERSAL'
-                "position" (List[float]): positions; number of elements depends
-                  on the joint type
-                "rate" (List[float]): velocities; number of elements depends
-                  on the joint type
+                'joint_type' (str): (`'FIXED'`|`'REVOLUTE'`|`'REVOLUTE2'`|
+                    `'PRISMATIC'`|`'SCREW'`|`'UNIVERSAL'`|`'BALL'`|`'GEAR'`)
+                'position' (List[float]): Positions. The number of elements
+                    depends on the joint type.
+                'rate' (List[float]): Velocities. Number of elements depends
+                    on the joint type.
+
+        Warning:
+            For the moment, I can't figure out why this method always returns
+            a joint type `'REVOLUTE'`, and the number of elements of `position`
+            and `rate` are always 1 (even for multiple dof joints). As far as
+            I know, it comes from the service.
         """
         req = GetJointPropertiesRequest()
         req.joint_name = joint_name
-
         ans = send_request(self._get_joint_properties_srv, req)
         out = {
             'joint_type': self._JOINT_TYPE[ans.type],
@@ -883,113 +760,106 @@ class _GazeboROS(object):
         """Get light properties.
 
         Args:
-            light_name (str): name of Gazebo Light
+            light_name (str): Name of Gazebo Light
 
         Returns:
             Dict:
-                "diffuse" (List[float]): diffuse color [r, g, b, a]
-                "attenuation_constant" (float):
-                "attenuation_linear" (float):
-                "attenuation_quadratic" (float):
+                'diffuse' (Tuple[float, float, float, float]): Diffuse color as 
+                    (r, g, b, a).
+                'attenuation' (Tuple[float, float, float]): Attenuation as
+                    (constant, linear, quadratic).
         """
         req = GetLightPropertiesRequest()
         req.light_name = light_name
-
         ans = send_request(self._get_light_properties_srv, req)
         out = {
-            'diffuse': [ans.diffuse.r,
+            'diffuse': (ans.diffuse.r,
                         ans.diffuse.g,
                         ans.diffuse.b,
-                        ans.diffuse.a],
-            'attenuation_constant': ans.attenuation_constant,
-            'attenuation_linear': ans.attenuation_linear,
-            'attenuation_quadratic': ans.attenuation_quadratic}
+                        ans.diffuse.a),
+            'attenuation': (ans.attenuation_constant,
+                            ans.attenuation_linear,
+                            ans.attenuation_quadratic)}
         return out
 
     def get_link_properties(self, link_name: str) -> Dict:
         """Get link properties.
 
         Args:
-            link_name (str): name of link; link names are prefixed by model
-              name, e.g. `model_name::link_name`
+            link_name (str): The link name, respecting the format
+                `'<model_name>::<link_name>'`.
 
         Returns:
             Dict:
-                "position" (List[float]): cartesian position center of mass in
-                  link frame
-                "orientation" (List[float]): orientation as quaternion of the
-                  center of mass in link frame
-                "gravity_mode" (bool): gravity mode
-                "mass" (float): linear mass of link
-                "ixx" (float): moment of inertia
-                "ixy" (float): moment of inertia
-                "ixz" (float): moment of inertia
-                "iyy" (float): moment of inertia
-                "iyz" (float): moment of inertia
-                "izz" (float): moment of inertia
+                'position' (Tuple[float, float, float]): Position as (x, y, z).
+                'orientation' (Tuple[float, float, float, float]): Orientation
+                    as quaternion (x, y, z, w).
+                'gravity_mode' (bool): Whether the link is subject to gravity.
+                'mass' (float): Mass of link.
+                'moments' (Tuple[float, float, float, float, float, float]):
+                    Components of the inertia matrix as
+                    (ixx, ixy, ixz, iyy, iyz, izz).
         """
         req = GetLinkPropertiesRequest()
         req.link_name = link_name
 
         ans = send_request(self._get_link_properties_srv, req)
         out = {
-            'position': [ans.com.position.x,
+            'position': (ans.com.position.x,
                          ans.com.position.y,
-                         ans.com.position.z],
-            'oriention': [ans.com.orientation.x,
-                          ans.com.orientation.y,
-                          ans.com.orientation.z],
+                         ans.com.position.z),
+            'orientation': (ans.com.orientation.x,
+                            ans.com.orientation.y,
+                            ans.com.orientation.z,
+                            ans.com.orientation.w),
             'gravity_mode': ans.gravity_mode,
             'mass': ans.mass,
-            'ixx': ans.ixx,
-            'ixy': ans.ixy,
-            'ixz': ans.ixz,
-            'iyy': ans.iyy,
-            'iyz': ans.iyz,
-            'izz': ans.izz}
+            'moments': (ans.ixx, ans.ixy, ans.ixz, ans.iyy, ans.iyz, ans.izz)}
         return out
 
-    def get_link_state(self, link_name: str) -> Dict:
-        """Get link state.
+    def get_link_state(self, link_name: str, reference_frame: str) -> Dict:
+        """Get link state (position and velocities).
 
         Args:
-            link_name (str): the link name
+            link_name (str): The link name, respecting the format
+                `'<model_name>::<link_name>'`.
+            reference_frame (str): Pose/twist relative to the frame of
+                this link/body; leave empty or `'world'` or `'map'`.
 
         Returns:
             Dict:
-                "link_name" (str): link name, link_names are in gazebo scoped
-                  name notation, `[model_name::body_name]`
-                "position" (List[float]): cartesian position center of mass in
-                  reference frame
-                "orientation" (List[float]): orientation as quaternion of the
-                  center of mass in reference frame
-                "linear_velocity" (List[float]): linear velocity of the center
-                  of mass in reference frame
-                "angular_velocity" (List[float]): angular velocity of the
-                  center of mass in reference frame
-                "reference_frame" (str): pose/twist relative to the frame of
-                  this link/body; leave empty or "world" or "map"; defaults
-                  to world frame
+                'link_name' (str):The link name, respecting the format
+                    `'<model_name>::<link_name>'`.
+                'position' (Tuple[float, float, float]): Position as
+                    (x, y, z).
+                'orientation' (Tuple[float, float, float, float]): Orientation
+                    as quaternion (x, y, z, w).
+                'linear_velocity' (Tuple[float, float, float]): Linear
+                    velocity as (vx, vy, vz).
+                'angular_velocity' (Tuple[float, float, float]): Angular
+                    velocity as (rx, ry, rz).
+                'reference_frame' (str): Pose/twist relative to the frame of
+                    this link/bodyL leave empty or `'world'` or `'map'`.
         """
         req = GetLinkStateRequest()
         req.link_name = link_name
-
+        req.reference_frame = reference_frame
         ans = send_request(self._get_link_state_srv, req)
         out = {
             'link_name': ans.link_state.link_name,
-            'position': [ans.link_state.pose.position.x,
+            'position': (ans.link_state.pose.position.x,
                          ans.link_state.pose.position.y,
-                         ans.link_state.pose.position.z],
-            'orientation': [ans.link_state.pose.orientation.x,
+                         ans.link_state.pose.position.z),
+            'orientation': (ans.link_state.pose.orientation.x,
                             ans.link_state.pose.orientation.y,
                             ans.link_state.pose.orientation.z,
-                            ans.link_state.pose.orientation.w],
-            'linear_velocity': [ans.link_state.twist.linear.x,
+                            ans.link_state.pose.orientation.w),
+            'linear_velocity': (ans.link_state.twist.linear.x,
                                 ans.link_state.twist.linear.y,
-                                ans.link_state.twist.linear.z],
-            'angular_velocity': [ans.link_state.twist.angular.x,
+                                ans.link_state.twist.linear.z),
+            'angular_velocity': (ans.link_state.twist.angular.x,
                                  ans.link_state.twist.angular.y,
-                                 ans.link_state.twist.angular.z],
+                                 ans.link_state.twist.angular.z),
             'reference_frame': ans.link_state.reference_frame}
         return out
 
@@ -998,10 +868,12 @@ class _GazeboROS(object):
 
         Returns:
             Dict:
-                keys: logger names
+                keys: Logger names.
                 values: Dict containing
-                    'level' (str) : logger level (debug|info|warn|error|fatal)
+                    'level' (str) : Logger level ('`debug`'|'`info`'|'`warn`'|
+                        '`error`'|'`fatal`')
         """
+        # TODO: make this better.
         req = GetLoggersRequest()
         ans = send_request(self._get_loggers_srv, req)
         out = {}
@@ -1013,19 +885,22 @@ class _GazeboROS(object):
         """Get model properties.
 
         Args:
-            model_name (str): name of Gazebo Model
+            model_name (str): Name of the model.
 
         Returns:
             Dict:
-                "parent_model_name" (str): parent model
-                "canonical_body_name" (str): name of canonical body, body names
-                  are prefixed by model name, e.g. `model_name::link_name`
-                "body_names" List[str]: list of bodies, body names are prefixed
-                  by model name, e.g. ` model_name::link_name`
-                "geom_names" List[str]: list of geoms
-                "joint_names"  List[str]: list of joints attached to the model
-                "child_model_names" List[str]: list of child models
-                "is_static" (bool): if model is static
+                'parent_model_name' (str): Name of the parent model. If no
+                    parent model : `''`.
+                'canonical_body_name' (str): Name of canonical body.
+                'body_names' List[str]: List of bodies.
+                'geom_names' List[str]: List of collision names.
+                'joint_names'  List[str]: List of joints attached to the model.
+                'child_model_names' List[str]: List of child models.
+                'is_static' (bool): Whether model is static.
+
+        Warning:
+            Canonical body is not returned due to gazebo_ros limitation.
+            It returns always `''`.
         """
         req = GetModelPropertiesRequest()
         req.model_name = model_name
@@ -1042,31 +917,31 @@ class _GazeboROS(object):
 
     def get_model_state(self, model_name: str,
                         relative_entity_name: str) -> Dict:
-        """Get model state.
+        """Get model state (state of the canonical link).
 
         Args:
-            model_name (str): name of Gazebo Model
-            relative_entity_name (str): return pose and twist relative to this
-              entity  an entity can be a model, body, or geom; be sure to use
-              gazebo scoped naming notation (e.g. `[model_name::body_name]`);
-              leave empty or "world" will use inertial world frame
+            model_name (str): Name of the model.
+            relative_entity_name (str): Return pose and twist relative to this
+                entity. This entity can be a model, body, or geom respecting
+                    the format `'<model_name>::<link_name>'`. Leave empty or
+                    `'world'` to use inertial world frame.
 
         Returns:
             Dict:
-                "seq" (int): holds the number of requests since the plugin
-                  started
-                "secs" (int): seconds (stamp_secs) since pose
-                "nsecs" (int): nanoseconds since stamp_secs
-                "frame_id" (str): not used but currently filled with the
-                  relative_entity_name
-                "position" (List[float]): cartesian position center of mass
-                  in relative entity frame
-                "orientation" (List[float]): orientation as quaternion of the
-                  center of mass in relative entity frame
-                "linear_velocity" (List[float]): linear velocity of the center
-                  of mass in relative entity frame
-                "angular_velocity" (List[float]): angular velocity of the
-                  center of mass in relative entity frame
+                'seq' (int): Holds the number of requests since the plugin
+                    started.
+                'secs' (int): Seconds (`stamp_secs`) since pose.
+                'nsecs' (int): Nanoseconds since `stamp_secs`.
+                'frame_id' (str): Not used but currently filled with the
+                    `relative_entity_name`.
+                'position' (Tuple[float, float, float]): Position as (x, y, z)
+                    in relative entity frame.
+                'orientation' (Tuple[float, float, float, float]): Orientation
+                    as quaternion (x, y, z, w) in relative entity frame.
+                'linear_velocity' (Tuple[float, float, float]): Linear
+                    velocity as (vx, vy, vz) in relative entity frame.
+                'angular_velocity' (Tuple[float, float, float]): Angular
+                    velocity as (rx, ry, rz) in relative entity frame.
         """
         req = GetModelStateRequest()
         req.model_name = model_name
@@ -1095,31 +970,28 @@ class _GazeboROS(object):
     def get_physics_properties(self) -> Dict:
         """Get physics properties.
 
-        Raises:
-            rospy.ServiceException: if service call fails
-
         Returns:
             Dict:
-                "time_step" (float): dt in seconds
-                "pause" (bool): true if physics engine is paused
-                "max_update_rate" (float): throttle maximum physics update rate
-                "gravity" (List[float]): gravity vector (e.g.
-                  earth ~[0, 0, -9.81])
-                "auto_disable_bodies" (bool): enable auto disabling of bodies
-                "sor_pgs_precon_iters" (int): preconditioning inner iterations
-                  when uisng projected Gauss Seidel
-                "sor_pgs_iters" (int): inner iterations when uisng projected
-                  Gauss Seidel
-                "sor_pgs_w" (float): relaxation parameter when using projected
-                  Gauss Seidel, 1 = no relaxation
-                "sor_pgs_rms_error_tol" (float): rms error tolerance before
-                  stopping inner iterations
-                "contact_surface_layer" (float): contact "dead-band" width
-                "contact_max_correcting_vel" (float): contact maximum
-                  correction velocity
-                "cfm" (float): global constraint force mixing
-                "erp" (float): global error reduction parameter
-                "max_contacts" (int): maximum contact joints between two geoms
+                'time_step' (float): Timestep in seconds.
+                'pause' (bool): `True` if physics engine is paused
+                'max_update_rate' (float): Throttle maximum physics update rate
+                'gravity' (Tuple[float, float, float]): Gravity vector as 
+                    (fx, fy, fz). E.g. earth ~`(0.0, 0.0, -9.8)`.
+                'auto_disable_bodies' (bool): Enable auto disabling of bodies.
+                'sor_pgs_precon_iters' (int): Preconditioning inner iterations
+                    when uisng projected Gauss Seidel.
+                'sor_pgs_iters' (int): Inner iterations when uisng projected
+                    Gauss Seidel.
+                'sor_pgs_w' (float): Relaxation parameter when using projected
+                    Gauss Seidel, 1 = no relaxation.
+                'sor_pgs_rms_error_tol' (float): RMS error tolerance before
+                    stopping inner iterations..
+                'contact_surface_layer' (float): Contact "dead-band" width.
+                'contact_max_correcting_vel' (float): Contact maximum
+                    correction velocity.
+                'cfm' (float): Global constraint force mixing.
+                'erp' (float): Global error reduction parameter.
+                'max_contacts' (int): Maximum contact joints between two geoms.
         """
         ans = send_request(self._get_physics_properties_srv)
         ode = ans.ode_config  # to shorten the following
@@ -1127,7 +999,7 @@ class _GazeboROS(object):
             'time_step': ans.time_step,
             'pause': ans.pause,
             'max_update_rate': ans.max_update_rate,
-            'gravity': [ans.gravity.x, ans.gravity.y, ans.gravity.z],
+            'gravity': (ans.gravity.x, ans.gravity.y, ans.gravity.z),
             'auto_disable_bodies': ode.auto_disable_bodies,
             'sor_pgs_precon_iters': ode.sor_pgs_precon_iters,
             'sor_pgs_iters': ode.sor_pgs_iters,
@@ -1145,16 +1017,16 @@ class _GazeboROS(object):
 
         Returns:
             Dict:
-                "sim_time" (float): current sim time
-                "model_names" (List[str]): list of models in the world
-                "rendering_enabled" (bool): whether gazebo rendering engine
-                  is enabled, currently always True
+                'sim_time (float): Current simulation time.
+                'model_names' (List[str]): List of models in the world.
+                'rendering_enabled' (bool): whether Gazebo rendering engine
+                    is enabled, currently always `True`.
         """
         req = GetWorldPropertiesRequest()
         ans = send_request(self._get_world_properties_srv, req)
         out = {
             'sim_time': ans.sim_time,
-            'model_names': ans.model_names,
+            'model_names': ans.model_names.copy(),
             'rendering_enabled': ans.rendering_enabled}
         return out
 
@@ -1178,21 +1050,24 @@ class _GazeboROS(object):
             vel: List[float]) -> None:
         """Set joint properties.
 
+        Args are lists. The lenght and the units depends on the the joint type.
+
         Args:
-            joint_name (str): name of joint
-            damping (List[float]): joint damping
-            hiStop (List[float]): joint limit
-            loStop (List[float]): joint limit
-            erp (List[float]): set joint erp
-            cfm (List[float]): set joint cfm
-            stop_erp (List[float]): set joint erp for joint
-              limit "contact" joint
-            stop_cfm (List[float]): set joint cfm for joint
-              limit "contact" joint
-            fudge_factor (List[float]): joint fudge_factor applied at limits,
-              see ODE manual for info.
-            fmax (List[float]): ode joint param fmax
-            vel (List[float]): ode joint param vel
+            joint_name (str): The joint name, respecting the format
+                `'<model_name>::<joint_name>'`.
+            damping (List[float]): Joint damping.
+            hiStop (List[float]): Joint limit.
+            loStop (List[float]): Joint limit.
+            erp (List[float]): Set joint erp.
+            cfm (List[float]): Set joint cfm.
+            stop_erp (List[float]): Set joint erp for joint limit "contact"
+                joint.
+            stop_cfm (List[float]): Set joint cfm for joint limit "contact" 
+                joint.
+            fudge_factor (List[float]): Joint `fudge_factor` applied at limits,
+                see ODE manual for info.
+            fmax (List[float]): ODE joint param `fmax`.
+            vel (List[float]): ODE joint param `vel`.
         """
         req = SetJointPropertiesRequest()
         req.joint_name = joint_name
@@ -1209,17 +1084,16 @@ class _GazeboROS(object):
         send_request(self._set_joint_properties_srv, req)
 
     def set_light_properties(
-            self, light_name: str, diffuse: List[float],
-            attenuation_constant: float, attenuation_linear: float,
-            attenuation_quadratic: float) -> None:
+            self, light_name: str, diffuse: Tuple[float, float, float, float],
+            attenuation: Attenuation) -> None:
         """Set light properties.
 
         Args:
-            light_name (str): name of Gazebo Light
-            diffuse (List[float]): diffuse color as [red, green, blue, alpha]
-            attenuation_constant (float): constant attenuation
-            attenuation_linear (float): linear attenuation
-            attenuation_quadratic (float): quadratic attenuation
+            light_name (str): Name of Gazebo Light.
+            diffuse (Tuple[float, float, float, float]): Diffuse color as
+                (red, green, blue, alpha).
+            attenuation (Tuple[float, float, float]): Attenuation as
+                (constant, linear, quadratic).
         """
         req = SetLightPropertiesRequest()
         req.light_name = light_name
@@ -1227,35 +1101,28 @@ class _GazeboROS(object):
         req.diffuse.g = diffuse[1]
         req.diffuse.b = diffuse[2]
         req.diffuse.a = diffuse[3]
-        req.attenuation_constant = attenuation_constant
-        req.attenuation_linear = attenuation_linear
-        req.attenuation_quadratic = attenuation_quadratic
+        req.attenuation_constant = attenuation[0]
+        req.attenuation_linear = attenuation[1]
+        req.attenuation_quadratic = attenuation[2]
         send_request(self._set_light_properties_srv, req)
 
     def set_link_properties(
-            self, link_name: str, position: List[float],
-            orientation: List[float], gravity_mode: bool, mass: float,
-            ixx: float, ixy: float, ixz: float, iyy: float, iyz: float,
-            izz: float) -> None:
+            self, link_name: str, position: Position,
+            orientation: Orientation, gravity_mode: bool, mass: float,
+            moments: Tuple[float, float, float, float, float, float]) -> None:
         """Set link properties.
 
         Args:
-            link_name (str): name of link; link names are prefixed by model
-              name, e.g. `model_name::link_name`
-            position (List[float]): center of mass location in link frame
-            orientation (List[float]): orientation as quaternion of the moment
-              of inertias relative to the link frame
-            gravity_mode (bool): set gravity mode on/off
-            mass (float): linear mass of link
-            ixx (float): moment of inertia
-            ixy (float): moment of inertia
-            ixz (float): moment of inertia
-            iyy (float): moment of inertia
-            iyz (float): moment of inertia
-            izz (float): moment of inertia
-
-        Raises:
-            rospy.ServiceException if reseting fails
+            link_name (str): The link name, respecting the format
+                `'<model_name>::<link_name>'`.
+            position (Tuple[float, float, float]): Position as (x, y, z).
+            orientation (Tuple[float, float, float, float]): Orientation
+                as quaternion (x, y, z, w).
+            gravity_mode (bool): Whether the link is subject to gravity.
+            mass (float): Mass of link.
+            moments (Tuple[float, float, float, float, float, float]):
+                Components of the inertia matrix as
+                (ixx, ixy, ixz, iyy, iyz, izz).
         """
         req = SetLinkPropertiesRequest()
         req.link_name = link_name
@@ -1268,34 +1135,36 @@ class _GazeboROS(object):
         req.com.orientation.w = orientation[3]
         req.gravity_mode = gravity_mode
         req.mass = mass
-        req.ixx = ixx
-        req.ixy = ixy
-        req.ixz = ixz
-        req.iyy = iyy
-        req.iyz = iyz
-        req.izz = izz
+        req.ixx = moments[0]
+        req.ixy = moments[1]
+        req.ixz = moments[2]
+        req.iyy = moments[3]
+        req.iyz = moments[4]
+        req.izz = moments[5]
         send_request(self._set_link_properties_srv, req)
 
     def set_link_state(
-            self, link_name: str, position: List[float],
-            orientation: List[float], linear_velocity: List[float],
-            angular_velocity: List[float], reference_frame: str) -> None:
-        """Set link state.
+            self, link_name: str, position: Position, orientation: Orientation,
+            linear_velocity: Tuple[float, float, float],
+            angular_velocity: Tuple[float, float, float],
+            reference_frame: str) -> None:
+        """Set link state (position and velocities).
 
         Args:
-            link_name (str): link name, link_names are in gazebo scoped name
-              notation, `[model_name::body_name]`
-            position (List[float]): desired position of the center of mass in
-              reference frame
-            orientation (List[float]): desired orientation (as quaternion) of
-              the center of mass in reference frame
-            linear_velocity (List[float]): desired linear velocity of the
-              center of mass in reference frame
-            angular_velocity (List[float]): desired angular velocity of the
-              center of mass in reference frame
-            reference_frame (str): set pose/twist relative to the frame of
-              this link/body; leave empty or "world" or "map" defaults to
-              world-frame
+            link_name (str): The link name, respecting the format
+                `'<model_name>::<link_name>'`.
+            position (Tuple[float, float, float]): Desired position of the
+                link as (x, y, z).
+            orientation (Tuple[float, float, float, float]): Desire
+                orientation of the link as quaternion(x, y, z, w).
+            linear_velocity (Tuple[float, float, float]): Desired linear
+                velocity of the link as (vx, vy, vz).
+            angular_velocity (Tuple[float, float, float]): Desired angular
+                velocity of the link as (rx, ry, rz).
+            reference_frame (str): Pose/twist relative to the frame of
+                this link/bodyL leave empty or `'world'` or `'map'`.
+        Args:
+
         """
         req = SetLinkStateRequest()
         req.link_state.link_name = link_name
@@ -1319,8 +1188,9 @@ class _GazeboROS(object):
         """Set logger level.
 
         Args:
-            logger (str): logger name
-            level (str): logger level (debug|info|warn|error|fatal)
+            logger (str): Logger name.
+            level (str): Logger level 
+                (`'debug'`|`'info'`|`'warn'`|`'error'`|`'fatal'`).
         """
         req = SetLoggerLevelRequest()
         req.logger = logger
@@ -1333,11 +1203,13 @@ class _GazeboROS(object):
         """Set model configuration.
 
         Args:
-            model_name (str): model to set state
-            urdf_param_name (str): UNUSED
-            joint_names (List[str]): list of joints to set positions; if
-              joint is not listed here, preserve current position.
-            joint_positions (List[float]): set to this position.
+            model_name (str): Model to set state.
+            urdf_param_name (str): Arg unused.
+            joint_names (List[str]): List of joints to set positions. For
+                joints in the model that are not listed here, the current
+                position is preserved.
+            joint_positions (List[float]): Joint positions. Units depends on
+                joint types.
         """
         req = SetModelConfigurationRequest()
         req.model_name = model_name
@@ -1347,23 +1219,28 @@ class _GazeboROS(object):
         send_request(self._set_model_configuration_srv, req)
 
     def set_model_state(
-            self, model_name: str, position: List[float],
-            orientation: List[float], linear_velocity: List[float],
-            angular_velocity: List[float], reference_frame: str) -> None:
-        """Set Gazebo model pose and twist.
+            self, model_name: str, position: Position, 
+            orientation: Orientation,
+            linear_velocity: Tuple[float, float, float],
+            angular_velocity: Tuple[float, float, float],
+            reference_frame: str) -> None:
+        """Set Gazebo model position, orientation and velocities.
+
+        Equivalent to set_link_state() on canonical link.
 
         Args:
-            model_name (str): model to set state (pose and twist)
-            position (List[float]): desired position in reference frame
-            orientation (List[float]): desired orientation (as quaternion) in
-              reference frame
-            linear_velocity (List[float]): desired linear velocity in
-              reference frame
-            angular_velocity (List[float]): desired angular velocity in
-              reference frame
-            reference_frame (str): set pose/twist relative to the frame of
-              this entity (Body/Model); leave empty or "world" or "map"
-              defaults to world-frame
+            model_name (str): Model to set state.
+            position (Tuple[float, float, float]): Desired position as
+                (x, y, z).
+            orientation (Tuple[float, float, float, float]): Desired
+                orientation as quaternion
+                (x, y, z, w).
+            linear_velocity (Tuple[float, float, float]): Desired linear
+                velocity as (vx, vy, vz).
+            angular_velocity (Tuple[float, float, float]): Desired angular
+                velocity as (rx, ry, rz).
+            reference_frame (str): Pose/twist relative to the frame of
+                this link/bodyL leave empty or `'world'` or `'map'`.
         """
         req = SetModelStateRequest()
         req.model_state.model_name = model_name
@@ -1389,27 +1266,28 @@ class _GazeboROS(object):
         """Set or get simulation parameters.
 
         Args:
-            bools (List[Dict]): bools,
-              e.g.  [{'name': 'auto_disable_bodies', 'value': False}]
-            ints (List[Dict]): ints,
-              e.g.  [{'name': 'max_contact', 'value': 20}]
-            strs (List[Dict]): strs
-            doubles (List[Dict]): doubles,
-              e.g.  [{'name': 'time_step', 'value': 0.001}]
-            groups (List[Dict]): groups,
-              e.g.  [{'name': 'Default', 'state': True, 'id': 0, 'parent': 0}]
+            bools (List[Dict]): Booleans.
+                e.g.  [{'name': 'auto_disable_bodies', 'value': False}]
+            ints (List[Dict]): Integers.
+                e.g.  [{'name': 'max_contact', 'value': 20}]
+            strs (List[Dict]): Strings.
+            doubles (List[Dict]): Doubles.
+                e.g.  [{'name': 'time_step', 'value': 0.001}]
+            groups (List[Dict]): Groups.
+                e.g.  [{'name': 'Default', 'state': True,
+                        'id': 0, 'parent': 0}]
 
         Returns:
-            Dict
-                'bools' (List[Dict]): bools,
-                  e.g.  {'name': 'auto_disable_bodies', 'value': False}
-                'ints' (List[Dict]): ints,
-                  e.g.  {'name': 'max_contact', 'value': 20}
-                'strs' (List[Dict]): strs
-                'doubles' (List[Dict]): doubles,
-                  e.g.  {'name': 'time_step', 'value': 0.001}
-                'groups' (List[Dict]): groups,
-                  e.g.  {'name': 'Default', 'state': True,
+            Current parameters as Dict:
+                'bools' (List[Dict]): Booleans.
+                    e.g.  {'name': 'auto_disable_bodies', 'value': False}
+                'ints' (List[Dict]): Integers.
+                    e.g.  {'name': 'max_contact', 'value': 20}
+                'strs' (List[Dict]): Strings.
+                'doubles' (List[Dict]): Doubles.
+                    e.g.  {'name': 'time_step', 'value': 0.001}
+                'groups' (List[Dict]): Groups.
+                    e.g.  {'name': 'Default', 'state': True,
                          'id': 0, 'parent': 0}
         """
         req = ReconfigureRequest()
@@ -1457,13 +1335,12 @@ class _GazeboROS(object):
             'groups': [
                 {'name': item.name, 'state': item.state,
                  'id': item.id, 'parent': item.parent}
-                for item in ans.config.groups]
-        }
+                for item in ans.config.groups]}
         return out
 
     def set_physics_properties(
             self,  time_step: float, max_update_rate: float,
-            gravity: List[float], auto_disable_bodies: bool,
+            gravity: Tuple[float, float, float], auto_disable_bodies: bool,
             sor_pgs_precon_iters: int, sor_pgs_iters: int, sor_pgs_w: float,
             sor_pgs_rms_error_tol: float, contact_surface_layer: float,
             contact_max_correcting_vel: float, cfm: float, erp: float,
@@ -1471,24 +1348,25 @@ class _GazeboROS(object):
         """Set physics properties.
 
         Args:
-            time_step (float): dt in seconds
-            max_update_rate (float): throttle maximum physics update rate
-            gravity (List[float]): gravity vector (e.g. earth ~[0,0,-9.81])
-            auto_disable_bodies (bool): enable auto disabling of bodies
-            sor_pgs_precon_iters (int): preconditioning inner iterations
-              when uisng projected Gauss Seidel
-            sor_pgs_iters (int): inner iterations when uisng projected
-              Gauss Seidel
-            sor_pgs_w (float): relaxation parameter when using projected
-              Gauss Seidel, 1 = no relaxation
-            sor_pgs_rms_error_tol (float): rms error tolerance before stopping
-              inner iterations
-            contact_surface_layer (float): contact "dead-band" width
-            contact_max_correcting_vel (float): contact maximum correction
-              velocity
-            cfm (float): global constraint force mixing
-            erp (float): global error reduction parameter
-            max_contacts (int): maximum contact joints between two geoms
+            time_step (float): Timestep in seconds.
+            max_update_rate (float): Throttle maximum physics update rate
+            gravity (Tuple[float, float, float]): Gravity vector as 
+                (fx, fy, fz). E.g. earth ~`(0.0, 0.0, -9.8)`.
+            auto_disable_bodies (bool): Enable auto disabling of bodies.
+            sor_pgs_precon_iters (int): Preconditioning inner iterations when
+                uisng projected Gauss Seidel.
+            sor_pgs_iters (int): Inner iterations when uisng projected
+                Gauss Seidel.
+            sor_pgs_w (float): Relaxation parameter when using projected
+                Gauss Seidel, 1 = no relaxation.
+            sor_pgs_rms_error_tol (float): RMS error tolerance before
+                stopping inner iterations..
+            contact_surface_layer (float): Contact "dead-band" width.
+            contact_max_correcting_vel (float): Contact maximum correction
+                velocity.
+            cfm (float): Global constraint force mixing.
+            erp (float): Global error reduction parameter.
+            max_contacts (int): Maximum contact joints between two geoms.
         """
         req = SetPhysicsPropertiesRequest()
         req.time_step = time_step
@@ -1510,111 +1388,61 @@ class _GazeboROS(object):
 
     def spawn_sdf_model(
             self, model_name: str, model_xml: str, robot_namespace: str,
-            initial_position: List[float], initial_orientation: List[float],
+            initial_position: Position, initial_orientation: Orientation,
             reference_frame: str) -> None:
-        """Spawn an sdf model.
+        """Spawn a model from sdf-formated string.
 
         Args:
-            model_name (str): name of the model to be spawn
-            model_xml (str): this should be an sdf or gazebo xml
-            robot_namespace (str): spawn robot and all ROS interfaces under
-              this namespace
-            initial_position (List[float]): only applied to canonical body
-            initial_orientation (List[float]): only applied to canonical body
-            reference_frame (str): initial_pose is defined relative to the
-              frame of this model/body, if left empty or "world", then gazebo
-              world frame is used
+            model_name (str): Desired model name, must be unique in
+                the simulation.
+            model_xml (str): The model as sdf. See https://sdformat.org/
+                for more details.
+            robot_namespace (str): Spawn robot and all ROS interfaces under
+                this namespace.
+            initial_position (Tuple[float, float, float]): Position of
+                canonical body as (x, y, z).
+            initial_orientation (Tuple[float, float, float, float]): 
+                Orientation of canonical body as quaternion (x, y, z, w).
+            reference_frame (str): Pose/twist relative to the frame of
+                this link/bodyL leave empty or `'world'` or `'map'`.
         """
         _spawn_model(
             model_name, model_xml, robot_namespace, initial_position,
-            initial_orientation, reference_frame, self._spawn_sdf_model_srv)
+            initial_orientation, self._spawn_sdf_model_srv, reference_frame)
 
     def spawn_urdf_model(
             self, model_name: str, model_xml: str, robot_namespace: str,
-            initial_position: List[float], initial_orientation: List[float],
+            initial_position: Position, initial_orientation: Orientation,
             reference_frame: str) -> None:
-        """Spawn an urdf model.
+        """Spawn a model from urdf-formated string.
 
         Args:
-            model_name (str): name of the model to be spawn
-            model_xml (str): this should be an urdf or gazebo xml
-            robot_namespace (str): spawn robot and all ROS interfaces under
-              this namespace
-            initial_position (List[float]): catesian position [x, y, z], only
-              applied to canonical body
-            initial_orientation (List[float]): quaternion [x, y, z, w], only
-              applied to canonical body
-            reference_frame (str): initial_pose is defined relative to the
-              frame of this model/body, if left empty or "world", then gazebo
-              world frame is used
+            model_name (str): Desired model name, must be unique in
+                the simulation.
+            model_xml (str): The model as urdf.
+            robot_namespace (str): Spawn robot and all ROS interfaces under
+                this namespace.
+            initial_position (Tuple[float, float, float]): Position of
+                canonical body as (x, y, z).
+            initial_orientation (Tuple[float, float, float, float]): 
+                Orientation of canonical body as quaternion (x, y, z, w).
+            reference_frame (str): Pose/twist relative to the frame of
+                this link/bodyL leave empty or `'world'` or `'map'`.
         """
         _spawn_model(
             model_name, model_xml, robot_namespace, initial_position,
-            initial_orientation, reference_frame, self._spawn_urdf_model_srv)
+            initial_orientation, self._spawn_urdf_model_srv, reference_frame)
 
     def unpause_physics(self):
         """Unpause the simulation."""
         send_request(self._unpause_physics_srv)
     # endregion
 
-    # -- Helper (private) methods
-    # region
-
-    def _fetch_physics_properties(self):
-        """Fetch and store physics properties into corresponding attributes."""
-        physics = self.get_physics_properties()
-        rospy.logdebug("Updating physics attributes")
-
-        self._time_step = physics['time_step']
-        self._paused = physics['pause']
-        self._max_update_rate = physics['max_update_rate']
-        self._gravity = physics['gravity']
-        self._auto_disable_bodies = physics['auto_disable_bodies']
-        self._sor_pgs_precon_iters = physics['sor_pgs_precon_iters']
-        self._sor_pgs_iters = physics['sor_pgs_iters']
-        self._sor_pgs_w = physics['sor_pgs_w']
-        self._sor_pgs_rms_error_tol = physics['sor_pgs_rms_error_tol']
-        self._contact_surface_layer = physics['contact_surface_layer']
-        self._contact_max_correcting_vel = physics[
-            'contact_max_correcting_vel']
-        self._cfm = physics['cfm']
-        self._erp = physics['erp']
-        self._max_contacts = physics['max_contacts']
-
-    def _set_some_physics_properties(self, **kwargs):
-        """Update some physics attributes contained in kwargs."""
-        if not kwargs:
-            rospy.logwarn("An unnecessary request will be sent")
-
-        physics = self.get_physics_properties()
-        physics.update(kwargs)
-        # Unlike the answer, 'pause' is not a keyword of the request
-        physics.pop('pause')
-
-        if not self._paused:
-            self.pause_physics()
-            self.set_physics_properties(**physics)
-            self.unpause_physics()
-        else:
-            self.set_physics_properties(**physics)
-
-        # endregion
-
-        # -- Miscellaneous --
-        # region
-
-    @ contextmanager
-    def pausing(self):
-        """Pausing context."""
-        try:
-            self.pause_physics()
-            yield
-        finally:
-            self.unpause_physics()
-
-    def __del__(self):
+    def shutdown(self):
+        """Shutdown everything."""
+        #rospy.signal_shutdown('shutdown invoked')
         for subscriber in self._subscribers:
             subscriber.unregister()
-
-        rospy.loginfo('All Gazebo subscribers deleted')
-    # endregion
+        self._launch.shutdown()
+        if self.core is not None:
+            self.core.shutdown()

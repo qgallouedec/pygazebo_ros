@@ -1,0 +1,3963 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+    <world name="default">
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+        <model name="model_test_apply_body_wrench">
+            <pose>-8 -8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_apply_body_force">
+            <pose>-8 -6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_apply_body_torque">
+            <pose>-8 -4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_apply_joint_effort">
+            <pose>-8 -2 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_clear_body_wrenches">
+            <pose>-8 0 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_clear_joint_forces">
+            <pose>-8 2 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <light type="point" name="light_test_delete_light">
+            <pose>-8 4 2 0 0 -1</pose>
+            <diffuse>1 0.1 0.1 1</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.8</constant>
+                <linear>0.2</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <model name="model_test_delete_model">
+            <pose>-8 6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_properties">
+            <pose>-8 8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <!-- -6 -->
+
+        <model name="model_test_get_joint_type">
+            <pose>-6 -8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_position">
+            <pose>-6 -6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_rate">
+            <pose>-6 -4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <light type="point" name="light_test_get_light_properties">
+            <pose>-6 -2 2 0 0 -1</pose>
+            <diffuse>0.1 0.2 0.3 0.4</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.5</constant>
+                <linear>0.6</linear>
+                <quadratic>0.7</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <light type="point" name="light_test_get_light_color">
+            <pose>-6 0 2 0 0 -1</pose>
+            <diffuse>0.2 0.3 0.4 0.5</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.8</constant>
+                <linear>0.2</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <light type="point" name="light_test_get_light_attenuation">
+            <pose>-6 2 2 0 0 -1</pose>
+            <diffuse>0.2 0.3 0.4 0.5</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.4</constant>
+                <linear>0.5</linear>
+                <quadratic>0.6</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <model name="model_test_get_link_properties">
+            <pose>-6 4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.11</ixx>
+                        <ixy>0.03</ixy>
+                        <ixz>0.8</ixz>
+                        <iyy>0.241</iyy>
+                        <iyz>0.001</iyz>
+                        <izz>0.23</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_gravity_mode">
+            <pose>-6 6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_mass">
+            <pose>-6 8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.333</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.333</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.333</izz>
+                    </inertia>
+                    <mass>2.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <!-- -4 -->
+
+        <model name="model_test_get_link_moments">
+            <pose>-4 -8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.16</ixx>
+                        <ixy>0.01</ixy>
+                        <ixz>0.02</ixz>
+                        <iyy>0.17</iyy>
+                        <iyz>0.03</iyz>
+                        <izz>0.18</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_state">
+            <pose>-4 -6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.11</ixx>
+                        <ixy>0.03</ixy>
+                        <ixz>0.8</ixz>
+                        <iyy>0.241</iyy>
+                        <iyz>0.001</iyz>
+                        <izz>0.23</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_position">
+            <pose>-4 -4 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.11</ixx>
+                        <ixy>0.03</ixy>
+                        <ixz>0.8</ixz>
+                        <iyy>0.241</iyy>
+                        <iyz>0.001</iyz>
+                        <izz>0.23</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_orientation">
+            <pose>-4 -2 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.11</ixx>
+                        <ixy>0.03</ixy>
+                        <ixz>0.8</ixz>
+                        <iyy>0.241</iyy>
+                        <iyz>0.001</iyz>
+                        <izz>0.23</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_linear_velocity">
+            <pose>-4 0 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.11</ixx>
+                        <ixy>0.03</ixy>
+                        <ixz>0.8</ixz>
+                        <iyy>0.241</iyy>
+                        <iyz>0.001</iyz>
+                        <izz>0.23</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_link_angular_velocity">
+            <pose>-4 2 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_model_properties">
+            <pose>-4 4 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="col_link_1">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="col_link_2">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="my_joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_parent_model_name_parent">
+            <pose>-4 6 5 0 0 0</pose>
+            <model name="model_test_get_parent_model_name">
+                <static>false</static>
+                <link name="link_1">
+                    <pose>0 0 0 0 0 0</pose>
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                        <material>
+                            <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                            <specular>.1 .1 .1 1.0</specular>
+                        </material>
+                    </visual>
+                </link>
+                <link name="link_2">
+                    <pose>0 0 1 0 0 0</pose>
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </visual>
+                </link>
+                <joint name="joint" type="revolute">
+                    <parent>link_1</parent>
+                    <child>link_2</child>
+                    <pose>0 0 0 0 0 0</pose>
+                    <axis>
+                        <xyz>0 0 1</xyz>
+                    </axis>
+                </joint>
+            </model>
+        </model>
+
+        <model name="model_test_get_canonical_link_name">
+            <pose>-4 8 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <!-- -2  -->
+
+        <model name="model_test_get_link_names">
+            <pose>-2 -8 5 0 0 0</pose>
+            <static>false</static>
+            <link name="first_link">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="second_link">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>first_link</parent>
+                <child>second_link</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_geom_name">
+            <pose>-2 -6 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="link_2_collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_names">
+            <pose>-2 -4 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="first_joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="second_joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_child_model_names">
+            <pose>-2 -2 5 0 0 0</pose>
+            <model name="model_test_get_child_model_names_child1">
+                <static>false</static>
+                <pose>0 0 0 0 0 0</pose>
+                <link name="link_1">
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                        <material>
+                            <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                            <specular>.1 .1 .1 1.0</specular>
+                        </material>
+                    </visual>
+                </link>
+                <link name="link_2">
+                    <pose>0 0 1 0 0 0</pose>
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </visual>
+                </link>
+                <joint name="joint" type="revolute">
+                    <parent>link_1</parent>
+                    <child>link_2</child>
+                    <pose>0 0 0 0 0 0</pose>
+                    <axis>
+                        <xyz>0 0 1</xyz>
+                    </axis>
+                </joint>
+            </model>
+            <model name="model_test_get_child_model_names_child2">
+                <pose>0 0 3 0 0 0</pose>
+                <static>false</static>
+                <link name="link_1">
+                    
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                        <material>
+                            <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                            <specular>.1 .1 .1 1.0</specular>
+                        </material>
+                    </visual>
+                </link>
+                <link name="link_2">
+                    <pose>0 0 1 0 0 0</pose>
+                    <inertial>
+                        <inertia>
+                            <ixx>0.166</ixx>
+                            <ixy>0</ixy>
+                            <ixz>0</ixz>
+                            <iyy>0.166</iyy>
+                            <iyz>0</iyz>
+                            <izz>0.166</izz>
+                        </inertia>
+                        <mass>1.0</mass>
+                    </inertial>
+                    <collision name="collision">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </collision>
+                    <visual name="visual">
+                        <geometry>
+                            <box>
+                                <size>1 1 1</size>
+                            </box>
+                        </geometry>
+                    </visual>
+                </link>
+                <joint name="joint" type="revolute">
+                    <parent>link_1</parent>
+                    <child>link_2</child>
+                    <pose>0 0 0 0 0 0</pose>
+                    <axis>
+                        <xyz>0 0 1</xyz>
+                    </axis>
+                </joint>
+            </model>
+        </model>
+
+        <model name="model_test_is_model_static">
+            <pose>-2 0 5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_model_state">
+            <pose>-2 2 0.5 0 0 0.5</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_world_properties">
+            <pose>-2 4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_model_names">
+            <pose>-2 6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_reset_world">
+            <pose>-2 8 6 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <!-- 0 -->
+
+        <light type="point" name="light_test_set_light_properties">
+            <pose>0 -8 2 0 0 -1</pose>
+            <diffuse>0.01 0.01 0.01 0.01</diffuse>
+            <specular>0.1 0.1 0.1 1.0</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.01</constant>
+                <linear>0.01</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <light type="point" name="light_test_set_light_color">
+            <pose>0 -6 2 0 0 -1</pose>
+            <diffuse>0.01 0.01 0.01 0.01</diffuse>
+            <specular>0.1 0.1 0.1 1.0</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.01</constant>
+                <linear>0.01</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <light type="point" name="light_test_set_light_attenuation">
+            <pose>0 -6 2 0 0 -1</pose>
+            <diffuse>0.01 0.01 0.01 0.01</diffuse>
+            <specular>0.1 0.1 0.1 1.0</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.01</constant>
+                <linear>0.01</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <model name="model_test_set_link_properties">
+            <pose>0 -4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_inertia_position">
+            <pose>0 -2 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_inertia_orientation">
+            <pose>0 0 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_gravity_mode">
+            <pose>0 2 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_mass">
+            <pose>0 4 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_moments">
+            <pose>0 6 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_link_state">
+            <pose>0 8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- 2 -->
+
+        <model name="model_test_set_link_position">
+            <pose>2 -8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_set_link_orientation">
+            <pose>2 -6 1 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_set_link_linear_velocity">
+            <pose>2 -4 1 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_set_link_angular_velocity">
+            <pose>2 -2 1 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <gravity>false</gravity>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_set_joint_positions">
+            <pose>2 0 1 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.4 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_3">
+                <pose>0 0 2 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.5 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_4">
+                <pose>0 0 3 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.6 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <joint name="joint_1" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_2" type="revolute">
+                <parent>link_2</parent>
+                <child>link_3</child>
+                <pose>0 0 1.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_3" type="prismatic">
+                <parent>link_3</parent>
+                <child>link_4</child>
+                <pose>0 0 2.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>0</lower>
+                        <upper>10</upper>
+                    </limit>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_model_state">
+            <pose>2 2 1 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.4 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_positions">
+            <pose>2 4 1 0.1 0.1 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.4 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_3">
+                <pose>0 0 2 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.5 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_4">
+                <pose>0 0 3 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.6 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <joint name="joint_1" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_2" type="revolute">
+                <parent>link_2</parent>
+                <child>link_3</child>
+                <pose>0 0 1.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_3" type="prismatic">
+                <parent>link_3</parent>
+                <child>link_4</child>
+                <pose>0 0 2.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>0</lower>
+                        <upper>10</upper>
+                    </limit>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_get_joint_rates">
+            <pose>2 6 1 0.1 0.1 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.4 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_3">
+                <pose>0 0 2 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.5 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_4">
+                <pose>0 0 3 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.6 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <joint name="joint_1" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_2" type="revolute">
+                <parent>link_2</parent>
+                <child>link_3</child>
+                <pose>0 0 1.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+            <joint name="joint_3" type="prismatic">
+                <parent>link_3</parent>
+                <child>link_4</child>
+                <pose>0 0 2.5 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>0</lower>
+                        <upper>10</upper>
+                    </limit>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_set_joint_position">
+            <pose>2 8 0.5 0 0 0</pose>
+            <static>false</static>
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.166</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.166</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.166</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+
+        <!-- cuboid (4, -8) -->
+        <!-- cube (4, -6) -->
+        <!-- sphere (4, -4) -->
+        <!-- cylinder (4, -2) -->
+        <!-- sdf (4, 0) -->
+        <!-- sdf file (4, 2) -->
+        <!-- urdf (4, 4) -->
+        <!-- urdf file (4, 6) -->
+        
+
+    </world>
+</sdf>
