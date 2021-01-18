@@ -12,5 +12,6 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/qgallouedec/pygazebo_ros',
     packages=find_packages(),
-    version='0.0.0'
+    version='0.0.0',
+    install_requires=['rospkg', 'defusedxml', 'netifaces']
 )
