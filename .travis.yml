@@ -14,6 +14,5 @@ install:
 - pip install .
 script: 
   - roscore &
-  - rosrun gazebo_ros gazebo &
   - roslaunch test/launch/test_gazebo_ros.launch &
   - pytest
