@@ -17,74 +17,11 @@ Attenuation = Tuple[float, float, float]
 
 
 class GazeboROS(_GazeboROS):
-    """Control Gazebo simulation.
+    """Control Gazebo simulation."""
 
-    Args:
-        is_core (bool, optional): Set `False` if a rosocre is already running.
-            If `False`, but no core is running, it starts one. Defaults to
-            `True`.
-        paused (bool, optional): Start Gazebo in a paused state. Defaults to
-            `False`.
-        use_sim_time (bool, optional): Use Gazebo time instead of real time.
-            Defaults to `True`.
-        extra_gazebo_args (str, optional): Extra args. Defaults to `''`.
-        gui (bool, optional): Launch the user interface window of Gazebo.
-            Defaults to `True`.
-        recording (bool, optional): Enable gazebo state log recording.
-            Defaults to `False`. Previously called `headless`.
-        debug (bool, optional): Start `gzserver` (Gazebo Server) in debug mode
-            using `gdb`. Defaults to False.
-        physics (str, optional): Specify a physics engine.
-            (`'ode'`|`'bullet'`|`'dart'`|`'simbody'`). Defaults to `'ode'`.
-        verbose (bool, optional): Run `gzserver` and `gzclient` with in verbose
-            mode : printing errors and warnings to the terminal. Defaults to
-            `False`.
-        output (str, optional): (`'log'`|`'screen'`)
-            If `'screen'`, stdout/stderr is sent to the screen
-            If `'log'`, the stdout/stderr is sent to a log file in
-            `$ROS_HOME/log`, and stderr continue to be sent to screen.
-            Defaults to `'screen'`.
-        world_name (str, optional): The world name with respect to
-            `GAZEBO_RESOURCE_PATH` environmental variable. Defaults to
-            `'worlds/empty.world'`.
-        respawn_gazebo (bool, optional): Restart the Gazebo node automatically
-            if it quits. Defaults to `False`.
-        use_clock_frequency (bool, optional): Whether you modify Gazebo's
-            `/clock` frequency (default to 1000 Hz); if `True`, set new clock
-            frequency with `pub_clock_frequency` arg. Defaults to `False`.
-        pub_clock_frequency (int, optional): Set Gazebo’s `/clock` publish
-            frequency (Hz). Requires `use_clock_frequency` to be `True`.
-            Defaults to `100`.
-        enable_ros_network (bool, optional): If `False`, disable all the Gazebo
-            ROS topics (except `/clock`) and services that are created from the
-            `gazebo_ros` package. Beware, by choosing `False`, you will no
-            longer be able to use most of the methods in this class.
-            Defaults to `True`.
-        server_required (bool, optional): Terminate launch script when
-            `gzserver` Gazebo Server exits. Defaults to `False`.
-        gui_required (bool, optional): Terminate launch script when `gzclient`
-            (user interface window) exits. Defaults to `False`.
-
-    Attributes:
-        attr1 (str): Description of `attr1`.
-        attr2 (:obj:`int`, optional): Description of `attr2`.
-    """
-
-    def __init__(
-            self, is_core: bool = True, paused: bool = False,
-            use_sim_time: bool = True, extra_gazebo_args: str = '',
-            gui: bool = True, recording: bool = False, debug: bool = False,
-            physics: str = 'ode', verbose: bool = False,
-            output: str = 'screen', world_name: str = 'worlds/empty.world',
-            respawn_gazebo: bool = False, use_clock_frequency: bool = False,
-            pub_clock_frequency: int = 100, enable_ros_network: bool = True,
-            server_required: bool = False, gui_required: bool = False):
+    def __init__(self):
         """Constructor."""
-        super().__init__(
-            is_core, paused, use_sim_time, extra_gazebo_args, gui, recording,
-            debug, physics, verbose, output, world_name, respawn_gazebo,
-            use_clock_frequency, pub_clock_frequency, enable_ros_network,
-            server_required, gui_required)
+        super().__init__()
         self._fetch_physics_properties()
 
     @property

@@ -219,31 +219,6 @@ def send_request(srv: Service, req: Optional[Request] = None) -> Response:
         return ans
 
 
-def _parse_args(paused, use_sim_time, extra_gazebo_args, gui,
-                recording, debug, physics, verbose, output, world_name,
-                respawn_gazebo, use_clock_frequency, pub_clock_frequency,
-                enable_ros_network, server_required, gui_required):
-    """Add the args to command line arguments passed to the Python script."""
-    sys.argv.append('paused:={}'.format(str(paused).lower()))
-    sys.argv.append('use_sim_time:={}'.format(str(use_sim_time).lower()))
-    sys.argv.append('extra_gazebo_args:={}'.format(extra_gazebo_args))
-    sys.argv.append('gui:={}'.format(str(gui).lower()))
-    sys.argv.append('recording:={}'.format(str(recording).lower()))
-    sys.argv.append('debug:={}'.format(str(debug).lower()))
-    sys.argv.append('physics:={}'.format(physics))
-    sys.argv.append('verbose:={}'.format(str(verbose).lower()))
-    sys.argv.append('output:={}'.format(output))
-    sys.argv.append('world_name:={}'.format(world_name))
-    sys.argv.append('respawn_gazebo:={}'.format(str(respawn_gazebo).lower()))
-    sys.argv.append('use_clock_frequency:={}'.format(
-        str(use_clock_frequency).lower()))
-    sys.argv.append('pub_clock_frequency:={}'.format(pub_clock_frequency))
-    sys.argv.append('enable_ros_network:={}'.format(
-        str(enable_ros_network).lower()))
-    sys.argv.append('server_required:={}'.format(str(server_required).lower()))
-    sys.argv.append('gui_required:={}'.format(str(gui_required).lower()))
-
-
 def _state_to_dict(state, i):
     """Helper function that turn state object in dict object."""
     return {
@@ -283,57 +258,8 @@ def _spawn_model(
     send_request(srv, req)
 
 
-def run_roscore():
-    """Run a roscore, after verifying no roscore is running"""
-    if rosgraph.is_master_online():
-        raise Exception('A master is already running.')
-    uuid = roslaunch.rlutil.get_or_generate_uuid(
-        options_runid=None, options_wait_for_master=False)
-    roslaunch.configure_logging(uuid)
-    launch = roslaunch.parent.ROSLaunchParent(uuid, [], True)
-    launch.start()
-    return launch
-
-
 class _GazeboROS(object):
     """Class containing a user-friendly functions for `gazebo_ros` services.
-
-    Args:
-        is_core (bool): Set `False` if a rosocre is already running.
-            If `False`, but no core is running, it starts one.
-        paused (bool): Start Gazebo in a paused state.
-        use_sim_time (bool): Use Gazebo time instead of real time.
-        extra_gazebo_args (str): Extra args. Defaults to `''`.
-        gui (bool): Launch the user interface window of Gazebo.
-        recording (bool): Enable Gazebo state log recording. Previously called
-            `headless`.
-        debug (bool): Start `gzserver` (Gazebo Server) in debug mode
-            using `gdb`.
-        physics (str): Specify a physics engine.
-            (`'ode'`|`'bullet'`|`'dart'`|`'simbody'`).
-        verbose (bool): Run `gzserver` and `gzclient` with in verbose
-            mode : printing errors and warnings to the terminal.
-        output (str): (`'log'`|`'screen'`)
-            If `'screen'`, stdout/stderr is sent to the screen
-            If `'log'`, the stdout/stderr is sent to a log file in
-            `$ROS_HOME/log`, and stderr continue to be sent to screen.
-        world_name (str): The world name with respect to
-            `GAZEBO_RESOURCE_PATH` environmental variable.
-        respawn_gazebo (bool): Restart the Gazebo node automatically
-            if it quits.
-        use_clock_frequency (bool): Whether you modify Gazebo's
-            `/clock` frequency (default to 1000 Hz); if `True`, set new clock
-            frequency with `pub_clock_frequency` arg.
-        pub_clock_frequency (int): Set Gazebo’s `/clock` publish
-            frequency (Hz). Requires `use_clock_frequency` to be `True`.
-        enable_ros_network (bool): If `False`, disable all the Gazebo
-            ROS topics (except `/clock`) and services that are created from the
-            `gazebo_ros` package. Beware, by choosing `False`, you will no
-            longer be able to use most of the methods in this class.
-        server_required (bool): Terminate launch script when
-            `gzserver` Gazebo Server exits.
-        gui_required (bool): Terminate launch script when `gzclient`
-            (user interface window) exits.
     """
 
     _JOINT_TYPE = [
@@ -345,62 +271,25 @@ class _GazeboROS(object):
         'UNIVERSAL'    # 2 DOF (2 rotations)
     ]
 
-    def __init__(
-            self, is_core: bool, paused: bool, use_sim_time: bool,
-            extra_gazebo_args: str, gui: bool, recording: bool, debug: bool,
-            physics: str, verbose: bool, output: str, world_name: str,
-            respawn_gazebo: bool, use_clock_frequency: bool,
-            pub_clock_frequency: int, enable_ros_network: bool,
-            server_required: bool, gui_required: bool):
+    def __init__(self):
         self.link_states = {}
         self.model_states = {}
         self._subscribers = []
-
-        if not enable_ros_network:
-            rospy.logwarn("`enable_ros_network` is set to False: GazeboROS() \
-                           instance won't start")
-
-        # currently, I haven't found a cleaner way to give args to empty_world
-        # than to add args to sys.argv
-        _parse_args(
-            paused, use_sim_time, extra_gazebo_args, gui, recording, debug,
-            physics, verbose, output, world_name, respawn_gazebo,
-            use_clock_frequency, pub_clock_frequency, enable_ros_network,
-            server_required, gui_required)
-
-        if is_core:
-            self.core = run_roscore()
-        else:
-            self.core = None
-
-        # launch world (and roscore)
-        self._launch_world()
 
         # init this node
         rospy.init_node('pygazebo_node', anonymous=True, log_level=rospy.ERROR)
 
         # connect services and subscribers
         self._connect_services()
-        self._connect_topics()
+        self._connect_topics(timeout=0)
 
         rospy.on_shutdown(self.shutdown)
 
-        # --- Init methods ---
+    # --- Init methods ---
     # For some parameters it is convenient to use getters and setters.
     # Should not be used with parameters that could change without user
     # action (example: sim_time).
     # region
-
-    def _launch_world(self):
-        self.uuid = roslaunch.rlutil.get_or_generate_uuid(
-            options_runid=None, options_wait_for_master=True)
-        roslaunch.configure_logging(self.uuid)
-        gazebo_ros_path = rospkg.RosPack().get_path('gazebo_ros')
-        launch_path = os.path.join(
-            gazebo_ros_path, 'launch/empty_world.launch')
-        self._launch = roslaunch.parent.ROSLaunchParent(
-            self.uuid, [launch_path], False)
-        self._launch.start()
 
     def _connect_services(self, timeout=None):
         """Connects to all available gazebo_ros services."""
@@ -1440,9 +1329,5 @@ class _GazeboROS(object):
 
     def shutdown(self):
         """Shutdown everything."""
-        #rospy.signal_shutdown('shutdown invoked')
         for subscriber in self._subscribers:
             subscriber.unregister()
-        self._launch.shutdown()
-        if self.core is not None:
-            self.core.shutdown()

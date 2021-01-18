@@ -12,14 +12,7 @@ class Test_GazeboROS(unittest.TestCase):
     def setUpClass(cls):
         warnings.simplefilter("ignore", ResourceWarning)
         warnings.simplefilter("ignore", DeprecationWarning)
-        test_path = os.path.dirname(os.path.abspath(__file__))
-        world_path = os.path.join(test_path, 'models/test__gazebo_ros.world')
-        cls.gazebo_ros = _GazeboROS(
-            is_core=True, paused=False, use_sim_time=True, extra_gazebo_args='',
-            gui=True, recording=False, debug=False, physics='ode', verbose=False,
-            output='screen', world_name=world_path, respawn_gazebo=False,
-            use_clock_frequency=False, pub_clock_frequency=100,
-            enable_ros_network=True, server_required=False, gui_required=False)
+        cls.gazebo_ros = _GazeboROS()
 
     def setUp(self):
         warnings.simplefilter("ignore", ResourceWarning)

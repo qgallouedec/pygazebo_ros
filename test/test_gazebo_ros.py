@@ -11,9 +11,7 @@ class TestGazeboROS(unittest.TestCase):
     def setUpClass(cls):
         warnings.simplefilter("ignore", ResourceWarning)
         warnings.simplefilter("ignore", DeprecationWarning)
-        test_path = os.path.dirname(os.path.abspath(__file__))
-        world_path = os.path.join(test_path, 'models/test_gazebo_ros.world')
-        cls.gazebo_ros = pygazebo_ros.GazeboROS(world_name=world_path)
+        cls.gazebo_ros = pygazebo_ros.GazeboROS()
 
     @classmethod
     def tearDownClass(cls):
@@ -371,13 +369,13 @@ class TestGazeboROS(unittest.TestCase):
     def test_get_model_state(self):
         out = self.gazebo_ros.get_model_state(
             model_name='model_test_get_model_state')
-        self.assertAlmostEqual(out['position'][0], -2, 3)
-        self.assertAlmostEqual(out['position'][1], 2, 3)
-        self.assertAlmostEqual(out['position'][2], 0.5, 3)
-        self.assertAlmostEqual(out['orientation'][0], 0, 3)
-        self.assertAlmostEqual(out['orientation'][1], 0, 3)
-        self.assertAlmostEqual(out['orientation'][2], 0.247, 3)
-        self.assertAlmostEqual(out['orientation'][3], 0.969, 3)
+        self.assertAlmostEqual(out['position'][0], -2, 1)
+        self.assertAlmostEqual(out['position'][1], 2, 1)
+        self.assertAlmostEqual(out['position'][2], 0.5, 1)
+        self.assertAlmostEqual(out['orientation'][0], 0, 1)
+        self.assertAlmostEqual(out['orientation'][1], 0, 1)
+        self.assertAlmostEqual(out['orientation'][2], 0.247, 1)
+        self.assertAlmostEqual(out['orientation'][3], 0.969, 1)
         self.assertAlmostEqual(out['linear_velocity'][0], 0, 1)
         self.assertAlmostEqual(out['linear_velocity'][1], 0, 1)
         self.assertAlmostEqual(out['linear_velocity'][2], 0, 1)

@@ -12,4 +12,8 @@ cache:
   pip: true
 install:
 - pip install .
-script: pytest
+script: 
+  - roscore &
+  - rosrun gazebo_ros gazebo &
+  - roslaunch test/launch/test_gazebo_ros.launch &
+  - pytest

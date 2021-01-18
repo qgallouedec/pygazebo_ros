@@ -3957,6 +3957,229 @@
         <!-- sdf file (4, 2) -->
         <!-- urdf (4, 4) -->
         <!-- urdf file (4, 6) -->
+
+        <model name="model_test_1">
+            <pose>6 -8 0.5 0 0 0</pose>
+            <static>false</static>
+
+            <link name="link_1">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>1</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>1</iyy>
+                        <iyz>0</iyz>
+                        <izz>1</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0.5 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0.5 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <diffuse>1.0 0.3 0.5 1.0</diffuse>
+                        <specular>.1 .1 .1 1.0</specular>
+                    </material>
+
+                </visual>
+            </link>
+            <link name="link_2">
+                <pose>0 0 1 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>1</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>1</iyy>
+                        <iyz>0</iyz>
+                        <izz>1</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0.5 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0.5 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>1 1 1</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+            <joint name="joint" type="revolute">
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <pose>0 0.5 0 0 0 0</pose>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                </axis>
+            </joint>
+        </model>
+
+        <model name="model_test_2">
+            <pose> 6 -6 0.1 0.1 0.1</pose>
+            <static>false</static>
+            <link name="link">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.5 0.5 0.5</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.5 0.5 0.5</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_3">
+            <pose>6 -4 5 0.1 0.1 0.1</pose>
+            <static>false</static>
+
+            <link name="link">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>1</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>1</iyy>
+                        <iyz>0</iyz>
+                        <izz>1</izz>
+                    </inertia>
+                    <mass>1.0</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.2 0.2 0.2</size>
+                        </box>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.2 0.2 0.2</size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+        </model>
+
+        <model name="model_test_4">
+            <pose>6 -2 6 0.1 -0.2 0.1</pose>
+            <static>false</static>
+
+            <link name="link">
+                <pose>0 0 0 0 0 0</pose>
+                <inertial>
+                    <inertia>
+                        <ixx>0.05</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.05</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.05</izz>
+                    </inertia>
+                    <mass>0.5</mass>
+                </inertial>
+
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <sphere>
+                            <radius>0.5</radius>
+                        </sphere>
+                    </geometry>
+                </collision>
+
+                <visual name="visual">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <sphere>
+                            <radius>0.5</radius>
+                        </sphere>
+                    </geometry>
+                </visual>
+            </link>
+        </model>
+
+
+        <light type="point" name="light_test_1">
+            <pose>6 -2 2 0 0 -1</pose>
+            <diffuse>1 0.1 0.1 1</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <constant>0.8</constant>
+                <linear>0.2</linear>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+        <light type="point" name="light_test_2">
+            <pose>6 0 2 0 0 -1</pose>
+            <diffuse>0.1 1 0.1 1</diffuse>
+            <specular>.1 .1 .1 1</specular>
+            <attenuation>
+                <range>20</range>
+                <linear>0.2</linear>
+                <constant>0.8</constant>
+                <quadratic>0.01</quadratic>
+            </attenuation>
+            <cast_shadows>false</cast_shadows>
+        </light>
         
 
     </world>

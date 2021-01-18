@@ -14,13 +14,18 @@ Clone de repository and install it.
 
 ```bash
 git clone https://github.com/qgallouedec/pygazebo_ros
-pip install -e pygazebo_ros
+pip install pygazebo_ros
 ```
 
 ## Usage
+
+Make sure that a roscore and gazebo_ros are running 
+
+Then, run this simple example:
 
 ```python
 import pygazebo_ros
 
 my_gazebo = pygazebo_ros.GazeboROS()
-my_gazebo.spawn_light(light_name='my_light', position=[0, 0, 1])
+my_gazebo.spawn_cube()
+```
