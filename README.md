@@ -29,3 +29,7 @@ import pygazebo_ros
 my_gazebo = pygazebo_ros.GazeboROS()
 my_gazebo.spawn_cube()
 ```
+
+Result:
+
+![](https://raw.githubusercontent.com/qgallouedec/pygazebo_ros/master/docs/spawn_cube.png)
