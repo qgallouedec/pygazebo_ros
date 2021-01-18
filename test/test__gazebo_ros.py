@@ -165,7 +165,7 @@ class Test_GazeboROS(unittest.TestCase):
         self.assertAlmostEqual(joint_position, 2.0, places=2)
 
     def test_set_model_state(self):
-        desired_pos = [4.0, 9.0, 3.0]
+        desired_pos = [6.0, 8.0, 3.0]
         self.gazebo_ros.set_model_state(
             model_name='model_test_1',
             position=desired_pos,
@@ -234,7 +234,7 @@ class Test_GazeboROS(unittest.TestCase):
             model_name='test_model_sdf',
             model_xml=model_xml,
             robot_namespace='test_robot_namespace_sdf',
-            initial_position=[-2.0, 3.0, 5.0],
+            initial_position=[6.0, 8.0, 5.0],
             initial_orientation=[0.1, 0.1, 0.2, 0],
             reference_frame='')
 
@@ -265,7 +265,7 @@ class Test_GazeboROS(unittest.TestCase):
             model_name='test_model_urdf',
             model_xml=model_xml,
             robot_namespace='test_robot_namespace_urdf',
-            initial_position=[0, 0, 10],
+            initial_position=[8, -8, 10],
             initial_orientation=[0, 0.1, 0.2, 0],
             reference_frame='')
 
