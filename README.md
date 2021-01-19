@@ -1,6 +1,6 @@
 # pygazebo_ros
 
-[![Build Status](https://travis-ci.com/qgallouedec/pygazebo_ros.svg?branch=devel)](https://travis-ci.com/qgallouedec/pygazebo_ros)
+[![Build Status](https://api.travis-ci.com/qgallouedec/pygazebo_ros.svg)](https://travis-ci.com/qgallouedec/pygazebo_ros)
                  
 ## Installation
 
