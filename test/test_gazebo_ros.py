@@ -25,28 +25,28 @@ class TestGazeboROS(unittest.TestCase):
         warnings.simplefilter("ignore", DeprecationWarning)
 
     def test_time_step(self):
-        self.gazebo_ros.time_step = 0.002
+        self.gazebo_ros.time_step = 0.0051
         time_step = self.gazebo_ros.time_step
-        self.assertEqual(time_step, 0.002)
+        self.assertEqual(time_step, 0.0051)
         self.gazebo_ros.time_step = 0.005
         time_step = self.gazebo_ros.time_step
         self.assertEqual(time_step, 0.005)
 
     def test_max_update_rate(self):
-        self.gazebo_ros.max_update_rate = 500
+        self.gazebo_ros.max_update_rate = 1001
         max_update_rate = self.gazebo_ros.max_update_rate
-        self.assertEqual(max_update_rate, 500)
+        self.assertEqual(max_update_rate, 1001)
         self.gazebo_ros.max_update_rate = 1000
         max_update_rate = self.gazebo_ros.max_update_rate
         self.assertEqual(max_update_rate, 1000)
 
     def test_gravity(self):
-        self.gazebo_ros.gravity = [1.0, 1.0, -1.0]
+        self.gazebo_ros.gravity = (0.01, 0.01, -10)
         gravity = self.gazebo_ros.gravity
-        self.assertEqual(gravity, (1.0, 1.0, -1.0))
-        self.gazebo_ros.gravity = [0.0, 0.0, -9.8]
+        self.assertEqual(gravity, (0.01, 0.01, -10))
+        self.gazebo_ros.gravity = (0.0, 0.0, -9.81)
         gravity = self.gazebo_ros.gravity
-        self.assertEqual(gravity, (0.0, 0.0, -9.8))
+        self.assertEqual(gravity, (0.0, 0.0, -9.81))
 
     def test_auto_disable_bodies(self):
         # FIXME: with can't I set auto_disable_bodies ????
@@ -93,9 +93,9 @@ class TestGazeboROS(unittest.TestCase):
         pass
 
     def test_contact_surface_layer(self):
-        self.gazebo_ros.contact_surface_layer = 0.002
+        self.gazebo_ros.contact_surface_layer = 0.0011
         contact_surface_layer = self.gazebo_ros.contact_surface_layer
-        self.assertEqual(contact_surface_layer, 0.002)
+        self.assertEqual(contact_surface_layer, 0.0011)
         self.gazebo_ros.contact_surface_layer = 0.001
         contact_surface_layer = self.gazebo_ros.contact_surface_layer
         self.assertEqual(contact_surface_layer, 0.001)
